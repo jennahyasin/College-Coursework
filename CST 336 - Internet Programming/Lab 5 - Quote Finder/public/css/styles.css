@@ -1,0 +1,31 @@
+body{
+  background-color: #ffd9a8;
+  color: #3c081b;
+  text-align: center;
+}
+
+button{
+  background-color: #3c081b;
+  color: #ffd9a8;
+}
+#title, #title2{
+  font-family: 'Mochiy Pop One', sans-serif;
+  font-size: 5.0em;
+}
+
+#keyword-title{
+  font-size: 2em;
+}
+.footer-container{
+  display:flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#back-home{
+  color: #ffd9a8;
+  text-decoration: none;
+  border: 2px;
+  padding: 10px;
+  background-color: #3c081b;
+}

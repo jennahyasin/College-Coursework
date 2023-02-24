@@ -1,0 +1,51 @@
+html, body {
+  background-color: black;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  height: 100%;
+  width: 100%;
+}
+
+body{
+  color: black;
+}
+
+#bid-dropdown, #how-to-play{
+  background-color: #ffc677;
+  color: black;
+  padding: 16px;
+  font-size: 35px;
+  cursor: pointer;
+  text-align-last: center;
+}
+
+.slot-symbol{
+  display:flex;
+  font-size: 130px;
+  padding: 90px;
+  background-color: #ffc677;
+  color: black;
+  justify-content: space-evenly;
+}
+
+h1{
+  display: flex;
+  justify-content: center;
+  color: #ffc677;
+  font-family: 'Rubik Moonrocks', cursive;
+  font-size: 50px;
+}
+#win-or-lose{
+  color: #ffc677;
+  font-size: 25px;
+}
+
+#spin-button{
+  background-color: #ffc677;
+  color: black;
+  padding: 16px;
+  font-size: 30px;
+  cursor: pointer;
+  text-align-last: center;
+}

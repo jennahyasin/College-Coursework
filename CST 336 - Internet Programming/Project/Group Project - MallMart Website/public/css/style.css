@@ -1,0 +1,435 @@
+/* Body CSS */
+body,
+html {
+    background-color: white;
+    text-align: center;
+    font-family: 'Work Sans', sans-serif;
+    margin: 0;
+    max-height: 100%;
+    max-width: 100%;
+    /* remove the spacing for our elements */
+}
+
+#creed {
+    margin-bottom: 2vh;
+    border-radius: 5px;
+}
+
+.spacer {
+    height: 7.5vh;
+}
+
+/* Account Page */
+#accountIconArea {
+    display: flex;
+    flex-direction: column;
+    /* background: #B4B4B4; */
+    border-radius: 8px;
+}
+
+#profileIcon {
+    width: 10vw;
+    border-radius: 10px;
+    margin: 0 auto;
+}
+
+#accountButtons {
+    display: flex;
+    justify-content: center;
+}
+
+#accountButtons button {
+    margin: 0 2.5vw;
+}
+
+#accountFields {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 5vh;
+}
+
+#accountFields img {
+    max-width: 15vw;
+}
+
+#accountContainer {
+    display: flex;
+    justify-content: center;
+}
+
+#accountText {
+    margin-left: 10vw;
+    margin-top: 2.5vh;
+    color: rgba(0, 0, 0, 0.9);
+}
+
+/* Home Carousel */
+#myCarousel {
+    width: 75vw;
+    margin: 0 auto;
+}
+
+/* Home Sale Item */
+#saleDisplay {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#saleCard {
+    background-color: #B4B4B4;
+    padding-left: 2vw;
+    padding-right: 2vw;
+    border-radius: 15px;
+    transition: all .3s ease-in-out;
+}
+
+#saleCard:hover {
+    transform: translate3d(0px, -1px, 0px);
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+}
+
+#saleTitle {
+    padding-top: 20px;
+    padding-bottom: 20px;
+    padding-left: 2vw;
+    padding-right: 2vw;
+    /* width: 24vw; */
+    /* border-top-left-radius: 15px;
+    border-top-right-radius: 15px; */
+    border-radius: 15px;
+    font-size: 2.5vw;
+    color: white;
+}
+
+/* Products Categories */
+#categoryBar {
+    display: flex;
+    justify-content: space-evenly;
+    background-color: #858585;
+    /*   margin-top: 5vh; */
+    padding: 3vh;
+}
+
+#allItemCat {
+    font-weight: bold;
+}
+
+#categoryBar button {
+    border: none;
+    background-color: #858585;
+}
+
+#categoryBar button:hover {
+    transform: scale(1.06);
+}
+
+/* TODO: Add Dividers */
+.otherCats {
+    /*   border: 2px solid white; */
+    font-weight: bold;
+}
+
+/* Products Search Bar */
+#searchBar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2.5vh;
+}
+
+#searchBar input {
+    padding: 8px;
+    border-radius: 10px;
+}
+
+#searchBar button {
+    background-color: #585F63;
+    padding: 7px;
+    border-radius: 8px;
+    border: none;
+    color: white;
+}
+
+#searchBar button:hover {
+    background-color: #3d4143
+}
+
+/* All Item Display on Products */
+#allItems {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+
+.indivItem {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-self: center;
+    flex-basis: 20%;
+
+    background-color: #B4B4B4;
+    border-radius: 10px;
+    padding: 10px;
+    margin: 10px;
+
+    transition: all .3s ease-in-out;
+}
+
+.indivItem:hover {
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+    transform: translate3d(0px, -1px, 0px);
+}
+
+.indivItem img {
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+/* Styling for Navigation Bar */
+nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    background-color: #212121;
+    height: 10vh;
+
+    /* Code to make navbar fixed at top */
+    /* position: fixed;
+    top: 0;
+    width: 100%; */
+}
+
+#navLinks {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+nav img {
+    width: 10vh;
+    height: auto;
+}
+
+nav a {
+    color: white;
+    font-size: 1.5vw;
+    font-weight: bold;
+    text-decoration: none;
+    padding-left: 5vw;
+    padding-right: 5vw;
+    border-left: 0.5px solid rgba(255, 255, 255, 0.9);
+}
+
+nav a:hover {
+    /*     color: wheat; */
+    text-decoration: none;
+    color: white;
+    transform: scale(1.03);
+}
+
+#curNav {
+    /*     color: wheat; */
+    text-decoration: underline;
+}
+
+#cartLogo {
+    width: 8vh;
+    height: auto;
+}
+
+#cartArea {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+#cartArea a {
+    padding-left: 3vw;
+    padding-right: 3vw;
+}
+
+#cartArea a:hover {
+    transform: scale(1.06);
+}
+
+#cartNumber {
+    /* display: none; */
+    color: white;
+    margin: 0 auto;
+    /*     background-color: blue; */
+    /*     border-radius: 10px; */
+    padding: 4px 7px;
+    font-size: 2.5vh;
+}
+
+#emptyCart {
+    margin-right: 20px;
+}
+
+#cartTotals {
+    border: solid;
+    border-color: #5a5d5e;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 20px;
+    font-size: 18px;
+}
+
+/* Styling for Login Page */
+#loginForm,
+#createForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 10px;
+    padding: 5px;
+}
+
+#loginForm input {
+    padding: 1.5vh;
+    border-radius: 5px;
+    width: 35%;
+}
+
+#loginLabel {
+    font-size: 20px;
+}
+
+#loginForm label {
+    font-weight: bold;
+}
+
+/* Signup and Edit */
+#Form {
+    background-color: whitesmoke;
+    border: solid;
+    border-color: #242526;
+    padding: 5vh;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 5px;
+    margin-right: auto;
+    margin-left: auto;
+    width: fit-content;
+    border-radius: 7px;
+    text-align: left;
+}
+
+.signup {
+    height: 40px;
+    border-radius: 10px;
+    padding: 5px;
+    margin: 5px;
+    background-color: white;
+}
+
+.formText {
+    font-size: 17px;
+    width: 100px;
+    text-decoration: underline;
+}
+
+#create {
+    /* background: whitesmoke;
+  border-radius: 3px;
+  border-color: black;
+  font-size: 15px;
+  color: #5a5d5e;  */
+    margin-bottom: 7px;
+    width: 100%;
+}
+
+#Title {
+    background-color: whitesmoke;
+    text-align: center;
+    padding: 20px;
+    font-family: 'Kanit', sans-serif;
+    font-size: 40px;
+    color: #5a5d5e;
+}
+
+.message {
+    display: inline;
+}
+
+#cartDisplayArea {
+    width: fit-content;
+    margin: 40px auto;
+    overflow: hidden;
+    position: relative;
+    border-radius: 0.6em;
+    background: #ecf0f1;
+    box-shadow: 0 0.5em 0 rgba(138, 148, 152, 0.2);
+}
+
+#cartItems {
+    width: fit-content;
+    padding-left: 20px;
+    padding-right: 20px;
+    font-size: 30px;
+}
+
+.cartText {
+    font-size: 17px;
+    padding: 5px;
+    width: 150px;
+    text-decoration: underline;
+}
+
+.shopper {
+    text-transform: lowercase;
+    font: 2em 'Shopper', sans-serif;
+    line-height: 0.5em;
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 2.3em;
+}
+
+
+/* Footer Proper Alignment Code */
+footer {
+    padding: 1vw;
+
+    /* position: fixed;
+    bottom: 0;
+    width: 100%; */
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    color: white;
+    background-color: #212121;
+    margin-bottom: 0;
+}
+
+#purchaseHistory {
+  
+}
+
+/* TODO: Center Align Text */
+#footerText {
+    max-width: 25vw;
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 0.75rem;
+    align: center;
+}
+
+footer img {
+    max-width: 10%;
+    height: auto;
+    padding: 0 2vw;
+    object-fit: contain;
+}
+
+#disclaimer {
+    color: red;
+    font-weight: 800;
+}

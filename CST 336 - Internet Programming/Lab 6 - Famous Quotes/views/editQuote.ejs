@@ -1,0 +1,40 @@
+<%- include('partials/header.ejs') %>
+  <h1>Updating Quote Data</h1>
+
+    <form method="POST" action="/quote/edit">
+
+      <input type="hidden" name="quoteId" value="<%=quoteInfo[0].quoteId%>">
+
+      Quote:
+      <input type="text" name="quote" value="<%=quoteInfo[0].quote%>">
+      <br>
+      Author:
+      <select name="authorId">
+        <% for (author of authors) { %>
+          <option value="<%=author.authorId%>">
+            <%=author.firstName%> <%=author.lastName%>
+            </option>
+              <% } %>
+              </select>
+                <br>
+      Category:
+      <select name="category">
+        <% for(category of categories) { %>
+          <option value="<%=category.category%>">
+            <%=category.category%>
+          </option>
+          <% } %>
+          </select>
+            <br>
+
+      <button>Update Quote</button>
+
+
+    </form>
+    <br>
+    <% if (typeof message != "undefined") { %>
+      <h3><%=message%></</h3>
+      <% } %>
+
+</body>
+</html>

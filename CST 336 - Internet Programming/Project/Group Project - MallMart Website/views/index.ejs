@@ -1,0 +1,85 @@
+<%- include("partials/header.ejs", {pageTitle: "Home" }) %>
+<body>
+    <%- include("partials/navigation.ejs", {pageTitle: "Home" }) %> <br> <br>
+
+    <!-- <img id="creed" width = " 75%" src="/img/mallmartBanner.JPG" alt="MallMart Creed"> -->
+
+    <div id="myCarousel" class="carousel slide" data-bs-ride="carousel">
+        <!-- Carousel indicators -->
+        <ol class="carousel-indicators">
+            <li data-bs-target="#myCarousel" data-bs-slide-to="0" class="active"></li>
+            <li data-bs-target="#myCarousel" data-bs-slide-to="1"></li>
+            <li data-bs-target="#myCarousel" data-bs-slide-to="2"></li>
+            <li data-bs-target="#myCarousel" data-bs-slide-to="3"></li>
+        </ol>
+    
+        <!-- Wrapper for carousel items -->
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="/img/mallmartBanner.JPG" class="d-block w-100" alt="Slide 1">
+            </div>
+            <div class="carousel-item">
+                <img src="/img/KnifeSetBanner.JPG" class="d-block w-100" alt="Slide 2">
+            </div>
+            <div class="carousel-item">
+                <img src="/img/WashBanner.JPG" class="d-block w-100" alt="Slide 3">
+            </div>
+            <div class="carousel-item">
+                <img src="/img/TentBanner.JPG" class="d-block w-100" alt="Slide 4">
+            </div>
+        </div>
+    
+        <!-- Carousel controls -->
+        <a class="carousel-control-prev" href="#myCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon"></span>
+        </a>
+        <a class="carousel-control-next" href="#myCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon"></span>
+        </a>
+    </div>
+
+    <div class="spacer"></div>
+
+    <div id="saleDisplay">
+      <div id="saleCard">
+      
+        <h1 id="saleTitle" class="bg-primary">Featured Item</h1>
+        <br>
+        <img src="/img/products/<%=data[0].imgName %>">
+        <br>
+        <h4 class="text-center">
+            <%=data[0].name%>
+            </h4>
+            $<%=data[0].price%><br>
+        <a href="#" class="onlyProduct text-center" id="<%=data[0].itemId%>">
+            More Info
+        </a>
+
+       
+      </div>
+    </div> <br> <br>
+
+    <!-- MODAL  -->
+    <div id="itemModal" class="modal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Item Information</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="itemInfo"></div>
+                </div>
+                <div class="modal-footer">
+                    <button class="cartBtn btn btn-success"> Add to Cart </button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <%- include("partials/footer.ejs") %>
+    <script src="/js/script.js"></script>
+</body>
+
+</html>

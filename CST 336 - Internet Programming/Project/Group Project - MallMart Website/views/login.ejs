@@ -1,0 +1,31 @@
+<%- include("partials/header.ejs", {pageTitle: "Login"}) %>
+<body>
+  <%- include("partials/navigation.ejs", {pageTitle: "Account"}) %>
+    <br><br>
+    <form id="loginForm" action="/login" method="POST">
+
+      <label id = "loginLabel" for="Username"> Username </label>
+      <input type="text" id="Username" name="username"> <br>
+      <label id = "loginLabel" for="Password"> Password </label>
+      <input type="password" id="Password" name="password"> <br> <br>
+      <button class="btn btn-secondary"> Login </button>
+    </form>
+    <form id="createForm" action="/create">
+      <button class="btn btn-secondary"> Create Account </button>
+    </form>
+
+  <% if (typeof message != "undefined") { %>
+    <% if (message == "Invalid password or username") { %>
+        <div class="alert alert-danger" role="alert" style="text-align: center">
+          <%= message  %> 
+        </div>
+    <% } else { %>
+        <div class="alert alert-success" role="alert">
+            <%= message  %> 
+        </div> 
+    <% } %>   
+  <% } %>
+    
+  <script src="/js/script.js"></script>
+</body>
+</html>

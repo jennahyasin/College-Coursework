@@ -1,0 +1,32 @@
+<%- include("partials/header.ejs", {pageTitle: "Create Account"}) %>
+<body>
+  <%- include("partials/navigation.ejs", {pageTitle: "Account"}) %>
+  
+  <br><br>
+  <form id="Form" method="POST" action="/create">
+    <h1 id = "Title"> Create Account </h1>
+    <div id="accountIconArea">
+        <img src="/img/user/userImg1.jpeg" id="profileIcon" alt="Users Profile Picture"> <br>
+        <input type="hidden" name="profilePic" id="profilePic" value=""> <br>
+        <button class="btn btn-secondary" type="button" id="genImage"> Get New Image </button> <br>
+    </div>
+    <label class="formText">Name: </label> <input class="signup" type="text" name="fullName" id="fullName" placeholder="First and Last name" required=""> <span id="nameError"></span><br>
+    <label class="formText">Username: </label> <input class="signup" type="text" name="username" placeholder="Username" required=""> <span id="userError"></span><br>
+    <label class="formText">Password: </label> <input class="signup" type="password" name="password" id = "password" placeholder="Password" required=""> <span id = "passwordError"></span><br>
+    <label class="formText">Re-type Password: </label> <input class="signup" type="password" name="password2" id = "password2" placeholder="Enter password again" required=""> <span id = "passwordError2"></span><br>
+    <label class="formText">Birth-Date: </label> <input class="signup" type="date" name="bday" id="bday" placeholder="Birth-Date" required=""> <span id = "bdayError"></span><br>
+    <label class="formText">Email: </label> <input class="signup" type="text" name="email" id="email" placeholder="Email" required=""> <span id = "emailError"></span><br>
+    <label class="formText">Phone Number: </label> <input class="signup" type="tel" name="phoneNumber" id="phoneNumber" placeholder="XXXXXXXXXX" required=""> <span id = "phoneNumberError"></span><br>
+    <label class="formText">Address: </label> <input class="signup" type="text" name="address" id="address" placeholder="Address" required=""> <span id = "addressError"></span> <br> <br>
+    <input id="create" class="text-center btn btn-primary" type="submit" value="Create User"> <br> <br>
+  </form> <br> <br>
+
+    <% if (typeof message !="undefined" ) { %>
+        <div class="alert alert-danger" role="alert" style="text-align: center">
+            <%= message %>
+        </div>
+    <% } %>
+
+  <script src="/js/account.js"></script>
+</body>
+</html>

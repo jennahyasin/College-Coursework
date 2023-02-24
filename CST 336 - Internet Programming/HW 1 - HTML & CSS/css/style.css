@@ -1,0 +1,85 @@
+body{
+  background-color: white;
+  color: #001e57;
+}
+h1, p, nav{
+  text-align: center;
+}
+footer{
+  color:#001e57;
+  font-size: 1.0em;
+  text-align:center;
+}
+p{
+  font-size: 1.5em;
+}
+nav a{
+  text-align: center;
+  text-decoration:none;
+  padding: 15px;
+  padding-bottom:4px;
+  font-size: 1.8em;
+  color: white;
+  border: 3px solid white;
+  background-color: #001e57;
+  
+}
+a.active{
+  color: #ff6251;
+}
+.buttons{
+  padding:25px 0;
+  background-color: #001e57;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+.box{
+  padding: 70px;
+  margin: 0px;
+  background-color: white;
+  text-align: center;
+  font-size: 30px;
+  color: #001e57;
+  text-decoration: none;
+}
+.images{
+  margin: 0px;
+  padding:5px 0;
+  background-color: #001e57;
+  display:flex;
+  flex-direction:row;
+  justify-content: space-evenly;
+}
+.item{
+  padding: 70px;
+  margin: 0px;
+  background-color: #001e57;
+}
+
+.box:hover{
+  background-color: #fffbb9;
+  font-size: 2em;
+  transition: .9s;
+}
+
+main, .footer-container{
+  display:flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.info-links{
+  color: #001357;
+  font-size: 1.5em;
+  text-decoration:#001357;
+}
+h1{
+  font-family: 'Titan One', cursive;
+  font-weight: 20;
+  font-size: 4em;
+}
+
+.indent{
+  margin-left:50px;
+}

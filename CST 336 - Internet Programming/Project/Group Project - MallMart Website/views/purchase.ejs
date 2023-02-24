@@ -1,0 +1,17 @@
+<%- include("partials/header.ejs", {pageTitle: "Cart" }) %>
+<body>
+    <%- include("partials/navigation.ejs") %>
+
+    <br> <br>
+    <h1> Purchase Successful! </h1> <br> <br>
+
+    <h3> Order Number #<%= data[0].transactionId %></h3>
+    <h5> Shipping: <%= data[0].shipping %> </h5>
+    <h4> Subtotal: <%= data[0].subtotal %> </h4>
+    <h5> Tax: <%= data[0].tax %> </h5>
+    <h4> Total: <%= data[0].total %> </h4>
+
+    <script src="/js/purchase.js"></script>
+</body>
+
+</html>

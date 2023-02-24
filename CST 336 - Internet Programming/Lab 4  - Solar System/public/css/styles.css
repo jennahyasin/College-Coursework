@@ -1,0 +1,24 @@
+body{
+  background-color: #004d65;
+  color: white;
+  text-align: center;
+}
+nav a{
+  color: #a77b00;
+  text-decoration: none;
+  border-width:5px;
+  padding: 15px;
+  padding-bottom:4px;
+  font-size: 1.8em;
+}
+nav a:hover{
+  border-bottom:2px white solid;
+  font-size: 2em;
+  transition: .9s;
+}
+
+.footer-container{
+  display:flex;
+  align-items: center;
+  justify-content: center;
+}

@@ -1,0 +1,69 @@
+<%- include("partials/header.ejs", {pageTitle: "Cart" }) %>
+
+    <body class="cartDisplay">
+        <%- include("partials/navigation.ejs") %>
+          <h2> Shopping Cart</h2>
+          <br><br>
+
+            <div id="cartDisplayArea">
+            </div>
+
+            <div id="paymentInfo">
+            <button id="emptyCart" class="btn btn-danger"> Clear Cart </button>
+            <label for="shipping"> Shipping: </label>
+            <select id="shipping">
+<!--                 <option value=""> Select Shipping </option> -->
+              <option value=7>Regular Delivery: $7.00</option>  
+              <option value=25>Next-day Delivery: $25.00</option>
+              <option value=20>Three-day Delivery: $20.00</option>
+                
+            </select>
+            </div>
+            <br><br>
+
+            <div id="cartTotals">
+                <p> Shipping: $<span id="shippingText">0</span> </p>
+                <p> Subtotal: $<span id="subtotalText"></span> </p>
+                <p> Tax: $<span id="taxText"></span> </p>
+                <p> Total: $<span id="totalText"></span> </p>
+            </div> <br>
+            <a href="#" class="checkoutOnly">
+                <button id="checkoutButton" class="btn btn-primary"> Checkout </button>
+            </a>
+            
+
+            <% if (typeof message !="undefined" ) { %>
+                <h5>
+                    <%= message %>
+                </h5>
+            <% } %>
+
+            <!-- MODAL  -->
+            <div id="checkoutModal" class="modal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Order Confirmation</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="checkoutInfo"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <form method="POST" action="/purchase">
+                                <input type="hidden" id="modalTotal" name="total">
+                                <input type="hidden" id="modalSubtotal" name="subtotal">
+                                <input type="hidden" id="modalTax" name="tax">
+                                <input type="hidden" id="modalShipping" name="shipping">
+                                <button id="cartBtn"> Checkout</button>
+                            </form>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Done</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <script src="/js/script.js"></script>
+    </body>
+
+    </html>

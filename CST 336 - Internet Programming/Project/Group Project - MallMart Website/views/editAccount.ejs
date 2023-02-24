@@ -1,0 +1,19 @@
+<%- include("partials/header.ejs", {pageTitle: "Edit Account"}) %>
+<body>
+  <%- include("partials/navigation.ejs", {pageTitle: "Account"}) %>
+  
+  <br><br>
+  <form id="Form" method="POST" action="/editAccount">
+      <h1 id = "Title"> Edit Account: </h1>
+    <label class="formText">Name: </label><input class="signup" type="text" name="fullName" placeholder="First and Last Name" value="<%= data[0].fullName %>"><span id="nameError"></span><br>
+    <label class="formText">Username: </label><input class="signup" type="text" name="username" value="<%= data[0].username %>" readonly><span id="usernameError"></span><br>
+    <label class="formText">Birth-Date: </label><input class="signup" type="date" name="bday" placeholder="Birth-Date" value="<%= data[0].bday %>" readonly><span id="dateError"></span><br>
+    <label class="formText">Email: </label><input class="signup" type="text" name="email" placeholder="Email" value="<%= data[0].email %>"><span id="emailError"></span><br>
+    <label class="formText">Phone Number: </label><input class="signup" type="tel" name="phoneNumber" placeholder="New Phone number" value="<%= data[0].phoneNumber %>"><span id="phoneError"></span><br>
+    <label class="formText">Address: </label><input class="signup" type="text" name="address" placeholder="New Address" value="<%= data[0].address %>"><span id="addressError"> </span> <br> <br>
+    <input id="create" class="btn btn-primary" type="submit" value="Update User"> <br> <br>
+  </form>
+    
+  <script src="/js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <title> Sign Up Page </title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+  <link href="https://fonts.googleapis.com/css2?family=Rubik+Moonrocks&family=Titan+One&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&family=Titan+One&display=swap" rel="stylesheet">
+  
+</head>
+
+<body>
+    <h1> Sign Up </h1>
+    <form id = "signupForm" action="welcome.html">
+     First Name:<input type="text" id = "fname" name="fName"> <span id="fnameError"</span><br>
+     Last Name: <input type="text" id = "lname" name="lName"> <span id="fnameError"</span><br>
+     Gender:    
+         <input class = "gender" type="radio" name="gender" value="m">Male<br>
+         <input class = "gender" type="radio" name="gender" value="f">Female<br>	
+      Zip Code:  <input type="text" id="zip" name="zip"><span id=zipcodeError></span><br>
+      
+      City:   <span id="city"></span> <br>
+      Latitude: <span id = "latitude"></span>  <br>
+      Longitude: <span id="longitude"></span> <br><br>
+
+      State: 
+      <select id="state" name="state">      
+      </select> <br>
+
+       Select a County: <select id="county"></select><br>
+
+
+       Desired Username: 
+       <input type="text" id="username" >
+       <span id= "usernameError"></span><br>
+
+        Password: <input type="password" id="password">
+        <span id="passwordSuggestion"></span><br>
+        <span id="passwordError"></span><br>
+        Type Password Again: <input type="password" id="password2"><br>
+   
+         <input id="signup" type="submit" value="Sign up!">
+  </form>
+
+  <footer>
+    <hr>
+      <div class="footer-container">
+        <div class="footer-text">
+          CST 336 Internet Programming. Lab 3. 2022&copy; Yasin 
+          <br />
+        </div>
+        <figure>
+          <img src="img/csumb_logo.png" alt="CSUMB logo."/>
+        </figure>
+      </div>
+    </footer>
+  </footer>
+<script src="js/script.js"></script>
+
+</body>
+</html>

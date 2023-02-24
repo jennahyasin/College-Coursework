@@ -1,0 +1,43 @@
+<%- include("partials/header.ejs", {pageTitle: "Account"}) %>
+<body>
+  <%- include("partials/navigation.ejs") %>
+
+  <h3 id="accountText"> Your Account </h3> <br> <br>
+
+  <div id="accountContainer">
+    <img src="<%= data[0].imgUrl %>">
+    <div id="accountFields">
+      <h3 class = "accountDetails"> <%= data[0].fullName %> </h4> 
+      <h4 class = "accountDetails"> Username: <%= data[0].username %> </h4>
+      <h4 class = "accountDetails"> Email: <%= data[0].email %> </h4>
+      <h5 class = "accountDetails"> Phone Number: <%= data[0].phoneNumber %> </h4>
+      <h5 class = "accountDetails"> Address: <%= data[0].address %> </h4>
+    </div>
+  </div> <br> <br>
+  <div id="accountButtons">
+    <form action="/logout">
+      <button class="btn btn-danger"> Logout </button>
+    </form>
+    <form action="/editAccount">
+      <button class="btn btn-secondary"> Edit Account </button>
+    </form>
+  </div> 
+  <hr> <br> <br>
+    
+  <div id="purchaseHistory">
+    <% if (typeof purchases != "undefined") { %>
+      <h3 class="text-center"> Order History </h3>
+      <% for (i in purchases) { %>
+        <div class="indivPurchase">
+          <h4> Order#<%= purchases[i].transactionId %> </h4>
+          <h4> Total: $<%= purchases[i].total %></h4>
+        </div>
+      <% } %>
+    <% } %>
+  </div><hr> <br> <br>
+    
+    
+  <script src="/js/script.js"></script>
+  <%- include("partials/footer.ejs") %>
+</body>
+</html>

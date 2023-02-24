@@ -1,0 +1,38 @@
+body {
+  background-image: url('img/bg-img.jpg');
+    background-repeat: no-repeat;
+
+}
+#header{
+  font-family: 'Rubik Bubbles', cursive;
+  font-size: 50px;
+  background-color: #ffe4a8;
+  text-align: center;
+  color: #002e7a;
+  padding: 20px;
+}
+ #container{
+  background-color: #d6d6d6;
+  text-align: center;
+  color: #002e7a;
+  padding: 20px;
+}
+#output{
+  background-color: #ffe4a8;
+  text-align: center;
+  color: #002e7a;
+}
+
+#cityName, #showCurrentTemp{
+  font-size: 55px;
+}
+
+#weather-description{
+  font-size: 30px;
+}
+.footer-container{
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  color: #002e7a;
+}

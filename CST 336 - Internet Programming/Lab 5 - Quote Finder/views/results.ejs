@@ -1,0 +1,38 @@
+<%- include("partials/header.ejs") %>
+<body>
+  <h1 id="title2"> Quotes Found </h1>
+<hr><br>
+  <% for (i of quotes) { %>
+    <%= i.quote %> <br>
+    -<em>
+      <a href = "#" id="<%=i.authorId%>">
+      <%= i.firstName%> <%=i.lastName %>
+      </a>
+    </em>
+    <br><br>
+
+  <% } %>
+    <div id="authorModal" class="modal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Author Information</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="authorInfo"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--     back to home button -->
+  <form action="/">
+    <input id = "back-home" type="submit" value="Go Back to Home" />
+</form>
+<%- include("partials/footer.ejs") %>
+  <script src = "/js/script.js"></script>
+</body>
+</html>

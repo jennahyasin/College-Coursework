@@ -1,0 +1,39 @@
+body{
+  background-color: #001e57;
+  color: white;
+  text-align: center;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 20px;
+}
+h1{
+  text-align: center;
+  font-family: 'Titan One', cursive;
+  font-size: 40px;
+}
+#signupForm{
+  background-color: #919191;
+}
+
+.footer-container{
+  display:flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#signup{
+  border: #001e57;
+  font-size: 25px;
+  background-color: #001e57;
+  color: white;
+  
+}
+
+#welcome-message{
+  text-align: center;
+  font-size: 75px;
+}
+#signup:hover{
+  background-color: #fffbb9;
+  font-size: 2em;
+  transition: .9s;
+}

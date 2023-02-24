@@ -1,0 +1,71 @@
+<%- include("partials/header.ejs", {pageTitle: "Products" }) %>
+<body>
+    <%- include("partials/navigation.ejs", {pageTitle: "Products" }) %>
+    <div id="mainContent">
+            <!-- Categories Selector -->
+            <div id="categoryBar">
+                <form>
+                    <input type="hidden" name="category" value="all">
+                    <button id="allItemCat"> All Items </button>
+                </form>
+                <% for (i in categories) { %>
+                <% let cat = (categories[i].category); %>
+                <% let capital = cat.charAt(0).toUpperCase() + cat.slice(1); %>
+                <form>
+                    <input type="hidden" name="category" value="<%= cat %>">
+                    <button class="otherCats"> <%= capital %> </button>
+                </form>
+                <% } %>
+
+                <!-- Search Bar -->
+            </div>
+            
+            <div id="searchBar">
+                <form>
+                    <input type="text" name="itemName" placeholder="Product Name">
+                    <button> Search </button>
+                </form>
+            </div>
+
+            <!-- All Item Display -->
+            <div id="allItems">
+                <% for(i=0; i < data.length; i++) { %>
+                <div class="indivItem">
+                    <img src="/img/products/<%= data[i].imgName %>" height="100px">
+                    <h4 class="text-center">
+                    <%=data[i].name%>
+                    </h4>
+                    <h5 class="text-center">
+                        $<%=data[i].price%>
+                    </h5>
+                    <a href="#" class="onlyProduct text-center" id="<%=data[i].itemId%>">
+                        More Info
+                    </a>
+                    
+                </div>
+                <% } %>
+            </div>
+
+            <!-- MODAL -->
+            <div id="itemModal2" class="modal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">Item Information</h4>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="itemInfo2"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button class="cartBtn btn btn-primary"> Add to Cart</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div> <br> <br>
+            <%- include("partials/footer.ejs") %>
+    </div> 
+    <script src="/js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+.add{
+  padding: 30px;
+  background-color: #77bb41;
+  color: white;
+  font-size: 1.5em;
+}
+body{
+  background-color: grey;
+  text-align: center;
+}
+.list{
+  padding: 30px;
+  background-color: #fecb3e;
+  font-size: 1.5em;
+}
+
+#button-container{
+  text-align: center;
+  justify-content: space-evenly;
+  display: flex;
+  padding: 30px;
+  background-color: white;
+  float: right;
+}
+
+nav a{
+  text-decoration: none;
+  color: white;
+  display: flex;
+  padding: 15px;
+  justify-content: center;
+  background-color: #606060;
+  justify-conent: space-between;
+}
+
+#nav-bar{
+  padding: 50px;
+  background-color: #004d65;
+  float: left;
+  display: flex;
+}
+
+h1{
+  text-align: center;
+  color: white;
+}
+
+.update-btn{
+  text-decoration: none;
+  padding: 5px;
+  background-color: blue;
+  color: white;
+  display: inline;
+}
+
+.delete-btn{
+  text-decoration: none;
+  padding: 5px;
+  background-color: red;
+  color: white;
+  display: inline;
+}
+.page-info{
+  text-align: center;
+  justify-content: space-evenly;
+}
+.footer-container{
+  display:flex;
+  align-items: center;
+  justify-content: center;
+  float: bottom;
+}

@@ -1,0 +1,17 @@
+<%- include('partials/header.ejs') %>
+ <h1> Update/Delete Authors </h1>
+
+ <% for (i=0; i < authors.length; i++) { %>
+ 
+   <a class="update-btn" href="/author/edit?authorId=<%=authors[i].authorId%>">UPDATE</a>
+ 
+   <a class="delete-btn" href="/author/delete?authorId=<%=authors[i].authorId%>">DELETE</a>
+   <%=authors[i].firstName%>
+   <%=authors[i].lastName%> <br>
+     <br><br>
+ 
+ <% } %>
+ <%- include('partials/footer.ejs')%>
+
+</body>
+</html

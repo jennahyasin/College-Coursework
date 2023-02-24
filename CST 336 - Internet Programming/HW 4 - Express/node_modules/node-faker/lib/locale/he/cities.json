@@ -1,0 +1,302 @@
+[
+  {
+    "he": "עכו",
+    "en": "Acre"
+  },
+  {
+    "he": "עפולה",
+    "en": "Afula"
+  },
+  {
+    "he": "ערד",
+    "en": "Arad"
+  },
+  {
+    "he": "אריאל",
+    "en": "Ariel"
+  },
+  {
+    "he": "אשדוד",
+    "en": "Ashdod"
+  },
+  {
+    "he": "אשקלון",
+    "en": "Ashkelon"
+  },
+  {
+    "he": "באקה-אל-ע'רביה",
+    "en": "Baqa al-Gharbiyye"
+  },
+  {
+    "he": "בת ים",
+    "en": "Bat Yam"
+  },
+  {
+    "he": "באר שבע",
+    "en": "Beersheba"
+  },
+  {
+    "he": "בית שאן",
+    "en": "Beit She'an"
+  },
+  {
+    "he": "בית שמש",
+    "en": "Beit Shemesh"
+  },
+  {
+    "he": "ביתר עילית",
+    "en": "Beitar Illit"
+  },
+  {
+    "he": "בני ברק",
+    "en": "Bnei Brak"
+  },
+  {
+    "he": "דימונה",
+    "en": "Dimona"
+  },
+  {
+    "he": "אילת",
+    "en": "Eilat"
+  },
+  {
+    "he": "אלעד",
+    "en": "El'ad"
+  },
+  {
+    "he": "גבעתיים",
+    "en": "Giv'atayim"
+  },
+  {
+    "he": "גבעת שמואל",
+    "en": "Giv'at Shmuel"
+  },
+  {
+    "he": "חדרה",
+    "en": "Hadera"
+  },
+  {
+    "he": "חיפה",
+    "en": "Haifa"
+  },
+  {
+    "he": "הרצליה",
+    "en": "Herzliya"
+  },
+  {
+    "he": "הוד השרון",
+    "en": "Hod HaSharon"
+  },
+  {
+    "he": "חולון",
+    "en": "Holon"
+  },
+  {
+    "he": "ירושלים",
+    "en": "Jerusalem"
+  },
+  {
+    "he": "כפר קאסם",
+    "en": "Kafr Qasim"
+  },
+  {
+    "he": "כרמיאל",
+    "en": "Karmiel"
+  },
+  {
+    "he": "כפר סבא",
+    "en": "Kfar Saba"
+  },
+  {
+    "he": "קריית אתא",
+    "en": "Kiryat Ata"
+  },
+  {
+    "he": "קריית ביאליק",
+    "en": "Kiryat Bialik"
+  },
+  {
+    "he": "קריית גת",
+    "en": "Kiryat Gat"
+  },
+  {
+    "he": "קריית מלאכי",
+    "en": "Kiryat Malakhi"
+  },
+  {
+    "he": "קריית מוצקין",
+    "en": "Kiryat Motzkin"
+  },
+  {
+    "he": "קריית אונו",
+    "en": "Kiryat Ono"
+  },
+  {
+    "he": "קריית שמונה",
+    "en": "Kiryat Shmona"
+  },
+  {
+    "he": "קריית ים",
+    "en": "Kiryat Yam"
+  },
+  {
+    "he": "לוד",
+    "en": "Lod"
+  },
+  {
+    "he": "מעלה אדומים",
+    "en": "Ma'ale Adumim"
+  },
+  {
+    "he": "מעלות-תרשיחא",
+    "en": "Ma'alot-Tarshiha"
+  },
+  {
+    "he": "מגדל העמק",
+    "en": "Migdal HaEmek"
+  },
+  {
+    "he": "מודיעין עילית",
+    "en": "Modi'in Illit"
+  },
+  {
+    "he": "מודיעין-מכבים-רעות",
+    "en": "Modi'in-Maccabim-Re'ut"
+  },
+  {
+    "he": "נהריה",
+    "en": "Nahariya"
+  },
+  {
+    "he": "נצרת",
+    "en": "Nazareth"
+  },
+  {
+    "he": "נצרת עילית",
+    "en": "Nazareth Illit"
+  },
+  {
+    "he": "נשר",
+    "en": "Nesher"
+  },
+  {
+    "he": "נס ציונה",
+    "en": "Ness Ziona"
+  },
+  {
+    "he": "נתניה",
+    "en": "Netanya"
+  },
+  {
+    "he": "נתיבות",
+    "en": "Netivot"
+  },
+  {
+    "he": "אופקים",
+    "en": "Ofakim"
+  },
+  {
+    "he": "אור עקיבא",
+    "en": "Or Akiva"
+  },
+  {
+    "he": "אור יהודה",
+    "en": "Or Yehuda"
+  },
+  {
+    "he": "פתח תקווה",
+    "en": "Petah Tikva"
+  },
+  {
+    "he": "קלנסווה",
+    "en": "Qalansawe"
+  },
+  {
+    "he": "רעננה",
+    "en": "Ra'anana"
+  },
+  {
+    "he": "רהט",
+    "en": "Rahat"
+  },
+  {
+    "he": "רמת גן",
+    "en": "Ramat Gan"
+  },
+  {
+    "he": "רמת השרון",
+    "en": "Ramat HaSharon"
+  },
+  {
+    "he": "רמלה",
+    "en": "Ramla"
+  },
+  {
+    "he": "רחובות",
+    "en": "Rehovot"
+  },
+  {
+    "he": "ראשון לציון",
+    "en": "Rishon LeZion"
+  },
+  {
+    "he": "ראש העין",
+    "en": "Rosh HaAyin"
+  },
+  {
+    "he": "צפת",
+    "en": "Safed"
+  },
+  {
+    "he": "סח'נין",
+    "en": "Sakhnin"
+  },
+  {
+    "he": "שדרות",
+    "en": "Sderot"
+  },
+  {
+    "he": "שפרעם",
+    "en": "Shefa-'Amr"
+  },
+  {
+    "he": "טמרה",
+    "en": "Tamra"
+  },
+  {
+    "he": "טייבה",
+    "en": "Tayibe"
+  },
+  {
+    "he": "תל אביב",
+    "en": "Tel Aviv"
+  },
+  {
+    "he": "טבריה",
+    "en": "Tiberias"
+  },
+  {
+    "he": "טירה",
+    "en": "Tira"
+  },
+  {
+    "he": "טירת כרמל",
+    "en": "Tirat Carmel"
+  },
+  {
+    "he": "אום אל-פחם",
+    "en": "Umm al-Fahm"
+  },
+  {
+    "he": "יבנה",
+    "en": "Yavne"
+  },
+  {
+    "he": "יהוד-מונוסון",
+    "en": "Yehud-Monosson"
+  },
+  {
+    "he": "יקנעם",
+    "en": "Yokneam"
+  }
+]
