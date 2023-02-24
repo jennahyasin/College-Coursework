@@ -1,0 +1,501 @@
+/*
+ * Jennah Yasin
+ * CST 338 - Software Design
+ * This Casino program plays a simple slot machine game where the user 
+ * decides on how much they want to bet, and the program generates a pull.
+ * Depending on the random pull, the user either gains money, or doesn't gain at all. 
+ */
+import java.util.Scanner;
+import java.lang.Math;
+import java.util.StringTokenizer;
+
+public class Assig2
+{      
+    static Scanner keyboard = new Scanner(System.in);
+    
+    /*
+     * Main class for Casino program. Takes users bet and runs it 
+     * through the methods getBet(), display(), saveWinnings()
+     * , pull(), and toStringWinnings() to output the pull and
+     * user's winnings.
+     */
+    public static void main (String[] args)
+    {
+        int betByUser = 0;
+        int multiplier;
+        int pulled;
+        ThreeString pullString = new ThreeString();
+        String result = " ";
+	
+        //gets the bet by the user until the user enters 0.
+        do
+        {
+            betByUser = getBet();
+            pullString = pull();
+            multiplier = getPayMultiplier(pullString);
+            pulled = multiplier * betByUser; 
+            
+            if(betByUser != 0)
+            {
+                display(pullString, pulled); 
+                pullString.saveWinnings(pulled);
+            }
+        } while(betByUser != 0);
+		
+        //when the user enter 0, outputs the individual ad total winnings.
+        if(betByUser == 0)
+        {
+            System.out.println("Thanks for playing at the Casino!");
+            result = pullString.toStringWinnings();
+            System.out.println("Your individual winnings were: ");
+            System.out.println(result);
+            
+            StringTokenizer winnings = new StringTokenizer(result);
+            
+            int totalWinnings = 0 ;
+            //converts the winnings string into ints using StringTokenizer
+            while(winnings.hasMoreTokens())
+            {
+                totalWinnings = totalWinnings + Integer.parseInt(winnings.nextToken());
+            }
+            System.out.printf("Your total winnings were: $%,d\n ", + totalWinnings);
+        }
+        keyboard.close();
+    }
+    /*
+     * This getBet() method asks the user for input for how much 
+     * they want to bet. Checks if the bet is valid using a boolean.
+     * Keeps asking the user how much they would like to bet until
+     * they enter a valid input or 0 (which ends the game).
+     * returns the user's bet to main.
+     */
+    public static int getBet()
+    {
+        System.out.print("\nHow much would you like to bet (1-100) or 0 to quit: ");
+        int bet = keyboard.nextInt();
+        boolean betIsValid = false;
+
+        //loops until the user enters a valid bet in the range 1-100.
+        while(betIsValid == false)
+        {
+            if(bet == 0)
+            {
+                betIsValid = true;
+            }
+            else if(bet >= 1 && bet <= 100) //range(1-100)
+            {
+                betIsValid = true;
+            }
+            else
+            {
+                System.out.print("How much would you like to bet (1-100) or 0 to quit: ");
+                bet = keyboard.nextInt();
+            }
+        }
+        return bet;
+    }
+    /*
+     * This static method pull() simulates a random pull from 
+     * the slot machine and creates three random strings.
+     * returns the three strings as ThreeString object to main.
+     */
+    public static ThreeString pull()
+    {
+        //creates an ThreeString object that pulls three phrases.
+        ThreeString pullThree = new ThreeString();
+        pullThree.getString1();
+        pullThree.setString1(randString());
+        pullThree.getString2();
+        pullThree.setString2(randString());
+        pullThree.getString3();
+        pullThree.setString3(randString());
+        
+        return pullThree;
+    }
+    /*
+     * This private randString() method works as a helper method
+     * for the pull() method. It creates and returns a single random
+     * string based on the probabilities of each phrase.
+     */
+    private static String randString()
+    {
+        int randomNumber = (int)(Math.random()*1000); //creates random number
+        String slotResult = "";
+        if(randomNumber > 500) //probability of getting (space) is 50%
+        {
+            slotResult = "(space)";
+        }
+        else if(randomNumber > 250) //probability of getting "cherries" is 25%
+        {
+            slotResult = "cherries";
+        }
+        else if(randomNumber > 125) //probability of getting "BAR" is 12.5%
+        {
+            slotResult = "BAR";
+        }
+        else //the rest of the probabilty goes to "7" which is 12.5%
+        {
+            slotResult = "7";
+        }
+        return slotResult;
+    }
+    /*
+     * The method getPayMultiplier() has parameter of a ThreeString
+     * object called thePull. It determines what the pay out will
+     * be taken by the pull() method. 
+     * It will return whatever the multiplier ends up being determined
+     * by the pull. 
+     */
+    public static int getPayMultiplier(ThreeString thePull)
+    {
+        //determines which string produces a specific multiplier amount
+        //either 0,5,15,30,50, or 100
+        int multiplier = 0; 
+        String string1 = thePull.getString1();
+        String string2 = thePull.getString2();
+        String string3 = thePull.getString3();
+		
+        //for cherries cherries [not cherries]
+        if(string1.contentEquals(string2) && !string2.contentEquals(string3)) 
+        {
+            if(string1 == "cherries" && string2 == "cherries")
+            {
+                multiplier = 15;
+            }
+            else
+                multiplier = 0;
+        }
+        //for cherries [not cherries] [any]
+        else if(!string1.contentEquals(string2))
+        {
+            if(string1 == "cherries") 
+            {
+                multiplier = 5;
+            }
+            else 
+                multiplier = 0;
+        }
+        //checks for when all three strings are the same
+        else if(string1.contentEquals(string2) && string1.contentEquals(string3))
+        {
+            //for 7 7 7 
+            if(string1 == "7" && string2 == "7" & string3 == "7")
+            {
+                multiplier = 100;
+            }
+            // for cherries cherries cherries
+            else if(string1 == "cherries" && string2 ==  "cherries" && string3 == "cherries" )
+            {
+                multiplier = 30;
+            }
+            //for BAR BAR BAR 
+            else if(string1 == "BAR" && string2 == "BAR" && string3 == "BAR")
+            {
+                multiplier = 50;
+            }
+            else 
+                multiplier = 0;
+        }
+        return multiplier;
+    }
+    /*
+     * The method display() takes in two parameters: a ThreeString object
+     * called thePull and an int for the winnings. This is where
+     * it is displayed to the user the amount they won after each pull, 
+     * or if they lost.  
+     */
+    public static void display(ThreeString thePull, int winnings)
+    {
+        System.out.println("whirrrrr.. and your pull is...");
+        int getMultiplier = getPayMultiplier(thePull); 
+        System.out.println(thePull.toString());
+	
+        //checks if the multiplier if not 0, print out winning amount
+        if(getMultiplier != 0)
+        {
+            System.out.println("Congratulations, you win: $" + winnings);
+        }
+        //checks if it is 0, no winnings
+        else
+            System.out.println("Sorry, you lose.");
+    }
+}
+
+/*
+ * The simple working class for the Casino program
+ */
+class ThreeString 
+{
+    //The data
+    private String string1;
+    private String string2;
+    private String string3;
+    public static final int MAX_LEN = 20;
+    public static final int MAX_PULLS = 40;
+    private static int[] pullWinnings = new int[MAX_PULLS];
+    private static int numPulls;
+	
+    /* 
+     * Default constructor. Initializes all three strings to " ".
+     */
+    public ThreeString() 
+    {
+        string1 = " ";
+        string2 = " ";
+        string3 = " ";
+    }
+	
+    /*
+     * This private helper method validString() takes in a parameter
+     * of type String that determines if a String is legal.
+     * Returns true if it is legal and false otherwise.
+     */
+    private boolean validString(String str)
+    {
+        if(str != null && str.length() <= MAX_LEN) //if the string is empty or exceeds max length
+        {
+            return true;
+        }
+        else 
+        {
+            return false;		
+        }
+    }
+    /*
+     * Accessor for string1
+     * returns string1
+     */
+    public String getString1() 
+    {
+        return string1;
+    }
+	
+    /*
+     * Mutator for string1. 
+     * Returns a boolean if string1 was successfully updated.
+     */
+    public boolean setString1(String string1) 
+    {
+        if(validString(string1))
+        {
+            this.string1 = string1;
+            return true;
+        }
+        return false;
+    }
+	
+    /*
+     * Accessor for string2
+     * returns string2
+     */
+    public String getString2() 
+    {
+        return string2;
+    }
+	
+    /*
+     * Mutator for string2.
+     * Returns a boolean if string2 was successfully updated.
+     */
+    public boolean setString2(String string2) 
+    {
+        if(validString(string2))
+        {
+            this.string2 = string2;
+            return true;
+        }
+        return false;
+    }
+	
+    /*Accessor for string3
+     * returns string3.
+     */
+    public String getString3() 
+    {
+        return string3;
+    }
+	
+    /*
+     * Mutator for string3.
+     * Returns a boolean if string3 was successfully updated.
+     */
+    public boolean setString3(String string3) 
+    {
+        if(validString(string3))
+        {
+            this.string3 = string3;
+            return true;
+        }
+        return false;
+    }
+
+    /*
+     * Returns all of the three strings combined into one.
+     */
+    public String toString() 
+    {
+        return string1 + " " + string2 + " " + string3;
+    }
+	
+    /*
+     * The method saveWinnings() takes the parameter of an int winnings
+     * that saves the winnings from each round. 
+     * Returns a boolean depending on if there was space to save
+     * the incoming value of winnings.
+     */
+    public boolean saveWinnings(int winnings)
+    {
+        if(MAX_PULLS > numPulls)
+        {
+            //if there is space, numPulls is increased by 1 for every win
+            pullWinnings[numPulls] = winnings; 
+            numPulls++; 
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+	
+    /*
+     * The method toStringWinnings() gets the values out of the array
+     * and the total winnings.
+     * Returns the string to the main method where the winnings
+     * are printed to the user. 
+     */
+    public String toStringWinnings()
+    {
+        //combines the winnings amount from single integer to a string of the total winnings number.
+        String total = " ";
+        for(int i = 0; i < numPulls; i++) 
+        {
+            total = total + " ";
+            String item = " ";
+            item = Integer.toString(pullWinnings[i]);
+            total = total + item;
+        }
+        return total;
+    } 
+}
+
+/*--------------------- Sample Run ---------------------*
+How much would you like to bet (1-100) or 0 to quit: 50
+whirrrrr.. and your pull is...
+(space) BAR cherries
+Sorry, you lose.
+
+How much would you like to bet (1-100) or 0 to quit: 60
+whirrrrr.. and your pull is...
+7 BAR (space)
+Sorry, you lose.
+
+How much would you like to bet (1-100) or 0 to quit: 70
+whirrrrr.. and your pull is...
+7 (space) BAR
+Sorry, you lose.
+
+How much would you like to bet (1-100) or 0 to quit: 8
+whirrrrr.. and your pull is...
+cherries cherries BAR
+Congratulations, you win: $120
+
+How much would you like to bet (1-100) or 0 to quit: 99
+whirrrrr.. and your pull is...
+(space) 7 cherries
+Sorry, you lose.
+
+How much would you like to bet (1-100) or 0 to quit: 67
+whirrrrr.. and your pull is...
+7 7 (space)
+Sorry, you lose.
+
+How much would you like to bet (1-100) or 0 to quit: 95
+whirrrrr.. and your pull is...
+(space) 7 (space)
+Sorry, you lose.
+
+How much would you like to bet (1-100) or 0 to quit: 62
+whirrrrr.. and your pull is...
+cherries cherries (space)
+Congratulations, you win: $930
+
+How much would you like to bet (1-100) or 0 to quit: 65
+whirrrrr.. and your pull is...
+cherries 7 cherries
+Congratulations, you win: $325
+
+How much would you like to bet (1-100) or 0 to quit: 30
+whirrrrr.. and your pull is...
+(space) BAR cherries
+Sorry, you lose.
+
+How much would you like to bet (1-100) or 0 to quit: 25
+whirrrrr.. and your pull is...
+BAR 7 (space)
+Sorry, you lose.
+
+How much would you like to bet (1-100) or 0 to quit: -5
+How much would you like to bet (1-100) or 0 to quit: 105
+How much would you like to bet (1-100) or 0 to quit: 95
+whirrrrr.. and your pull is...
+BAR cherries BAR
+Sorry, you lose.
+
+How much would you like to bet (1-100) or 0 to quit: 180
+How much would you like to bet (1-100) or 0 to quit: 100
+whirrrrr.. and your pull is...
+7 BAR cherries
+Sorry, you lose.
+
+How much would you like to bet (1-100) or 0 to quit: 95
+whirrrrr.. and your pull is...
+cherries 7 (space)
+Congratulations, you win: $475
+
+How much would you like to bet (1-100) or 0 to quit: 1
+whirrrrr.. and your pull is...
+(space) (space) BAR
+Sorry, you lose.
+
+How much would you like to bet (1-100) or 0 to quit: 22
+whirrrrr.. and your pull is...
+7 cherries 7
+Sorry, you lose.
+
+How much would you like to bet (1-100) or 0 to quit: 45
+whirrrrr.. and your pull is...
+BAR cherries BAR
+Sorry, you lose.
+
+How much would you like to bet (1-100) or 0 to quit: 65
+whirrrrr.. and your pull is...
+(space) (space) (space)
+Sorry, you lose.
+
+How much would you like to bet (1-100) or 0 to quit: 33
+whirrrrr.. and your pull is...
+(space) (space) (space)
+Sorry, you lose.
+
+How much would you like to bet (1-100) or 0 to quit: 85
+whirrrrr.. and your pull is...
+(space) cherries BAR
+Sorry, you lose.
+
+How much would you like to bet (1-100) or 0 to quit: 72
+whirrrrr.. and your pull is...
+(space) cherries 7
+Sorry, you lose.
+
+How much would you like to bet (1-100) or 0 to quit: 40
+whirrrrr.. and your pull is...
+cherries cherries (space)
+Congratulations, you win: $600
+
+How much would you like to bet (1-100) or 0 to quit: 0
+Thanks for playing at the Casino!
+Your individual winnings were: 
+  0 0 0 120 0 0 0 930 325 0 0 0 0 475 0 0 0 0 0 0 0 600
+Your total winnings were: $2,450
+--------------------------------------------------------*/

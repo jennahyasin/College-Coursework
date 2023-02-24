@@ -1,0 +1,1787 @@
+/*
+ * CST 338 - Software Design - Assig6
+ * Warren Ngoun
+ * Yukio Rivera
+ * Jennah Yasin
+ * Luis Jimenez
+ * "Build Card Game" with multi-threaded timer.
+ *  Uses Model View Controller design to split up 
+ *  important tasks from the game to make working
+ *  in main as easy as possible.
+ */
+
+import java.util.*;
+import javax.swing.*;
+import javax.swing.border.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.text.DecimalFormat;
+import java.awt.BorderLayout;
+
+public class Assig6 {
+    static int NUM_CARDS_PER_HAND = 7;
+    static int NUM_PLAYERS = 2;
+
+    public static void main(String[] args) {
+        // Given variables for SuitMatchGame
+        int numPacksPerDeck = 1;
+        int numJokersPerPack = 2;
+        int numUnusedCardsPerPack = 0;
+        Card[] unusedCardsPerPack = null;
+        
+        CardGameOutline SuitMatchGame = new CardGameOutline(
+            numPacksPerDeck, numJokersPerPack,
+            numUnusedCardsPerPack, unusedCardsPerPack,
+            NUM_PLAYERS, NUM_CARDS_PER_HAND);
+
+        CardGameController buildGame = new CardGameController(SuitMatchGame);
+
+        // Deal the hands to both players and sets the middle area with cards
+        buildGame.initialDeal();
+        // Initial "can't play" check for Player b/c they're going first
+        buildGame.setStackError();
+        buildGame.updateAllAreas();
+    
+        // Loop that runs while the deck has cards, doesn't 
+        // care about card count in hand.
+        try {
+            while (buildGame.getDeckSize() > 0) {
+                buildGame.updateTimer();
+                System.out.println(" ");
+                // Only updates the screen if SOMETHING is done 
+                // that needs the screen to be updated
+                if (CardGameController.screenUpdate) {
+                    // Use this IF for only PLAYING cards, functions after 
+                    // playing cards, and cases where you WOULD play a card
+                    if (buildGame.getTurn()) { // Computer Turn
+                        if (buildGame.computerIndexSetter()) {
+                            // If the computer can find its card IT WILL play 
+                            // its card, then draw & flip the turn to player.
+                            buildGame.playCard();
+                            buildGame.drawCOMPCard();
+                            // Flip turn is at the bottom
+                        } else {
+                            // If the computer CANT find a card to 
+                            // play it'll land here
+                            if (CardGameController.stackError) {
+                                // Case where the PLAYER couldn't play any 
+                                // cards last turn so 2 cant plays in a row
+                                buildGame.resetMiddleCards();
+                                buildGame.resetCantPlays();
+                                buildGame.setStackError();
+                            } else {
+                                CardGameModel.computerCouldntPlay = true;
+                            }
+                            buildGame.incrementComputerCant();
+                        }
+                        
+                        buildGame.flipTurn();
+                        // Should only ever be called on the player
+                        buildGame.setStackError(); 
+                    } else { // Player Turn
+                        if (CardGameController.stackError) {
+                            // This ENTIRE IF is where WE CANT PLAY ANYTHING
+                            if (CardGameModel.computerCouldntPlay) {
+                                // The Computer just went but COULDN'T PLAY
+                                buildGame.resetMiddleCards();
+                                buildGame.resetCantPlays();
+                                buildGame.setStackError();
+                            } else {
+                                // The Computer just went but DID PLAY
+                                buildGame.flipTurn();
+                            }
+                            buildGame.incrementPlayerCant();
+                        } else if (buildGame.playCard()) {
+                            // If that card WAS successfully played, then draw a new card
+                            buildGame.drawPLYRCard();
+                            buildGame.flipTurn();
+                        }
+                    }
+    
+                    // Display all the updates
+                    buildGame.updateAllAreas();
+                    // Then reset our loop variables
+                    CardGameController.screenUpdate = false;
+                    // CardGameController.stackButtonIndex = 0;
+                    CardGameController.indexOfClick = 8;
+    
+                } else if (buildGame.getTurn() == true) {
+                    CardGameController.screenUpdate = true;
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Game is done!");
+        }
+
+        // Clear the play panel then display the winner in the middle
+        buildGame.showWinners();
+    } // End of Main
+} // End of Class
+
+// CardGameModel: Runs the majority of the code and logic needed to run the
+// game on a turn to turn basis.
+class CardGameModel {
+    // Keep an internal track of a CardGameOutline to run the game on
+    CardGameOutline SuitMatchGame;
+    // Boolean to keep track of the last player, we use player just arbitrarily 
+    private boolean playerWasLast = false;
+    // Stores the players/computers played cards. Essentially the playing field.
+    // Uses individual cards to make it easier on us to think.
+    private Card leftCard = null;
+    private Card centerCard = null;
+    private Card rightCard = null;
+    // Also store internal hands to make doing operations easier
+    private Hand playerHand;
+    private Hand computerHand;
+    // Unchanging numbers for our Player & Computer to use as indexes
+    private final int COMP = 0;
+    private final int PLYR = 1;
+    // Count for our "Can't Play" scenario
+    private int computerCantPlay = 0;
+    private int playerCantPlay = 0;
+    // Booleans to keep track of the CANT PLAYs in succession
+    public static boolean computerCouldntPlay = false;
+    public static boolean playerCouldntPlay = false;
+    
+    // Create hands from the CardGameOutline's hands & an internal 
+    // CardGameOutline to run the game 
+    CardGameModel(CardGameOutline currentGame) {
+        this.SuitMatchGame = currentGame;
+        playerHand = SuitMatchGame.getHand(PLYR);
+        computerHand = SuitMatchGame.getHand(COMP);
+    }
+
+    /**
+     * getDeckSize: Simple getter for the remaining cards in the deck.
+     * 
+     * @return An int of the number of cards remaining in the deck
+     */
+    public int getDeckSize() {
+        return SuitMatchGame.getNumCardsRemainingInDeck();
+    }
+
+    /**
+     * flipTurn: flips the player turn tracker to maintain player order.
+     */
+    public void flipTurn() {
+        playerWasLast = !(playerWasLast);
+    }
+
+    /**
+     * deal: Runs CardGameOutline's deal and then runs the internal helper
+     * to update hands for the rest of the functions that use the internal
+     * hands.
+     */
+    public void deal() {
+        SuitMatchGame.deal();
+        updateHands();
+    }
+
+    /**
+     * getPlayedCards: a helper for the controller to grab the state of the 
+     * play area in Card obj form.
+     * 
+     * @return the Left, Center, & Right card in an Card Obj array. 0 is for 
+     * the leftCard, 1 is for the centerCard, and 2 for the rightCard. 
+     */
+    public Card[] getPlayedCards() {
+        Card[] combinedPlayedCards = new Card[3];
+        // Combines all the separate played cards into an array for alt usage
+        combinedPlayedCards[0] = leftCard;
+        combinedPlayedCards[1] = centerCard;
+        combinedPlayedCards[2] = rightCard;
+        return combinedPlayedCards;
+    }
+
+    /**
+     * canPlayCard: Scans the current stack of played cards and the hand of
+     * whoever's turn it is to see if it's even possible to play any card.
+     * 
+     * @return true if a card can be played, false if it's a can't play scenario
+     */
+    public boolean canPlayCard() {
+        // First check if the player or computer was last, 
+        // then scan the corresponding hands
+        if (!playerWasLast) {
+            // Loop through the entire hand & check if each passes the test
+            // Uses a private helper to scan if it's legal.
+            for (int i = 0; i < playerHand.getNumCards(); i++) {
+                Card tempCard = playerHand.inspectCard(i);
+
+                if (cardInRange(tempCard, leftCard) || cardInRange(tempCard, rightCard) || cardInRange(tempCard, centerCard))
+                        return true;
+            }
+        } else if (playerWasLast) {
+            for (int i = 0; i < computerHand.getNumCards(); i++) {
+                Card tempCard = computerHand.inspectCard(i);
+
+                if (cardInRange(tempCard, leftCard) || cardInRange(tempCard, rightCard) || cardInRange(tempCard, centerCard)) 
+                        return true;
+            }
+        }
+        return false; // Only returns false if there are no hits above
+    }
+    
+    /**
+     * computerIndexSetter: Finds the INDEX of the CARD in HAND and a MATCHING 
+     * STACK INDEX for the Computer so it can actually use the playCard function
+     * 
+     * @return true IF a card is found that can be played, false for nothing
+     */
+    public boolean computerIndexSetter() {
+        for (int i = 0; i < computerHand.getNumCards(); i++) {
+            Card tempCard = computerHand.inspectCard(i);
+    
+            if (cardInRange(tempCard, leftCard)) {
+                CardGameController.indexOfClick = i;
+                CardGameController.stackButtonIndex = 0;
+                return true;
+            } else if (cardInRange(tempCard, centerCard)) {
+                CardGameController.indexOfClick = i;
+                CardGameController.stackButtonIndex = 1;
+                return true;
+            } else if (cardInRange(tempCard, rightCard)) {
+                CardGameController.indexOfClick = i;
+                CardGameController.stackButtonIndex = 2;
+                return true;
+            }
+        }
+        return false; // If NO cards were recognized as in range
+    }
+    
+    /**
+     * cardInRange: A private helper to compare two cards and if the potential 
+     * one can go onto the compared one.
+     * 
+     * @param potentialCard the card FROM THE HAND
+     * @param compareCard the card ALREADY on the Stack
+     * @return true IF the potentialCard is within -1/+1 range of the 
+     * compareCard's value. False if otherwise.
+     */
+    private boolean cardInRange(Card potentialCard, Card compareCard) {
+        int potCard = potentialCard.getValueAsInt();
+        int compCard = compareCard.getValueAsInt();
+        
+        if (potCard - 1 == compCard || potCard + 1 == compCard) {
+            return true;
+        } else if (potCard == 13 && compCard == 0) {
+            // Overflow case where Joker needs to wrap around to Ace
+            return true;
+        } else if (potCard == 0 && compCard == 13) {
+            // Another overflow case where Ace needs to wrap around to Joker
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    // Getters for the playerHand in Hand Object form
+    public Hand getPlayerHand() {
+        return this.playerHand;
+    }
+
+    // Getters for the computerHand in Hand Object form
+    public Hand getComputerHand() {
+        return this.computerHand;
+    }
+
+    /**
+     * getTurn: Getter for the current turn
+     * 
+     * @return If TRUE player WAS LAST. If false COMPUTER was LAST.
+     */
+    public boolean getTurn() {
+        return playerWasLast;
+    }
+
+    /**
+     * updateHands: Internal helper method to update the instance
+     * variable hands for easier use in other functions.
+     */
+    private void updateHands() {
+        playerHand = SuitMatchGame.getHand(PLYR);
+        computerHand = SuitMatchGame.getHand(COMP);
+    }
+
+    // getCOMPCantPlay: Simple getter for the "Cant Play" Count for COMP
+    public int getCOMPCantPlay() {
+        return this.computerCantPlay;
+    }
+
+    // getPLYRCantPlay: Simple getter for the "Cant Play" Count for Player
+    public int getPLYRCantPlay() {
+        return this.playerCantPlay;
+    }
+
+    // incrementPlayerCant: Increment the Player's cant play count
+    public void incrementPlayerCant() {
+        playerCantPlay++;
+    }
+    
+    // incrementPlayerCant: Increment the Computer's cant play count
+    public void incrementComputerCant() {
+        computerCantPlay++;
+    }
+
+    // drawPLYRCard: Draw a card for the player from the deck using 
+    // CardGameOutline's methods
+    public void drawPLYRCard() {
+        SuitMatchGame.takeCard(PLYR);
+        updateHands();
+    }
+    
+    // drawCOMPCard: Draw a card for the computer from the deck using 
+    // CardGameOutline's methods
+    public void drawCOMPCard() {
+        SuitMatchGame.takeCard(COMP);
+        updateHands();
+    }
+
+    /**
+     * dealStartingCards: Draw cards from the deck and replace the 3 cards on 
+     * the play area.
+     */
+    public void dealStartingCards() {
+        leftCard = SuitMatchGame.getCardFromDeck();
+        centerCard = SuitMatchGame.getCardFromDeck();
+        rightCard = SuitMatchGame.getCardFromDeck();
+    }
+
+    /**
+     * resetCantPlays: Reset the "cant play" counters for the game members
+     */
+    public void resetCantPlays() {
+        computerCouldntPlay = false;
+        playerCouldntPlay = false;
+    }
+
+    /**
+     * playCard: Using the indexes of the clicked card/card in hand & the 
+     * potential stack of the card to try and place the card down. Then will 
+     * use the CardGameOutline's playCard method to play the internal card and 
+     * remove it from the hand so view can just display the correct hands. 
+     *  
+     * @return
+     */
+    public boolean playCard() {
+        // Create a temporary hand based on whoever's turn it is
+        Hand tempHand;
+        if (playerWasLast) {
+            tempHand = computerHand;
+        } else {
+            tempHand = playerHand;
+        }
+
+        // Get the index of the selected card & selected stack
+        int indexSelected = CardGameController.indexOfClick;
+        int stackIndex = CardGameController.stackButtonIndex;
+        boolean updateMid = false;
+
+        Card stackCard  = new Card ();
+        // If the index isn't in range we return false b/c there's no card there
+        if (indexSelected == 8) {
+            return false;
+        }
+
+        // Otherwise grab the card to set
+        Card selected = new Card(tempHand.inspectCard(indexSelected));
+
+        int stackVal = 0;
+        int selectedVal = selected.getValueAsInt();
+        // if card value is 1 less than stack value
+        int highVal = selectedVal + 1;
+        // if card value is 1 more than stack value
+        int lowVal = selectedVal - 1;
+        
+        // Middle stacks
+        if (stackIndex == 0) {
+            stackCard = leftCard;
+            updateMid = true;
+        } else if (stackIndex == 1) {
+            stackCard = centerCard;
+            updateMid = true;
+        } else if (stackIndex == 2) {
+            stackCard = rightCard;
+            updateMid = true;
+        }
+        stackVal = stackCard.getValueAsInt();
+        
+        // Sets the selected card to the middle stack
+        if (updateMid) {
+            if (stackVal == highVal || stackVal == lowVal) {
+                selected = new Card (tempHand.playCard(indexSelected));
+                stackCard = selected;
+
+                if (stackIndex == 0) {
+                    leftCard = selected;
+                } else if (stackIndex == 1) {
+                    centerCard = selected;
+                } else if (stackIndex == 2) {
+                    rightCard = selected;
+                }
+
+                updateHands();
+                return true;              
+            } else if (stackVal == 0 && selectedVal == 13|| stackVal == 13 && selectedVal == 0) {
+                selected = new Card (tempHand.playCard(indexSelected));
+                stackCard = selected;
+
+                if (stackIndex == 0) {
+                    leftCard = selected;
+                } else if (stackIndex == 1) {
+                    centerCard = selected;
+                } else if (stackIndex == 2) {
+                    rightCard = selected;
+                }
+
+                updateHands();
+                return true;
+            }
+        }
+        return false;
+    }
+}
+        
+// CardGameView: Strictly handles drawing the state of each player's hand
+// and the status of the center playing area based on the states of each
+// hand and the cards in the middle.
+class CardGameView {
+    // Keep an internal timer so we can update it later
+    private JLabel timerTime;
+    // Create a CardTable to display everything to 
+    private CardTable gameCardTable;
+    // Create shorter panel names for frequently accessed panels
+    private JPanel playerPnl;
+    private JPanel computerPnl;
+    private JPanel playPnl;
+
+    // CardGameView constructor that creates a CardTable to use as the main 
+    // display window. 
+    CardGameView() {
+        // Establish main frame in which program will run
+        gameCardTable = new CardTable("Build Card Game", Assig6.NUM_CARDS_PER_HAND, Assig6.NUM_PLAYERS);
+        // Set these frequently used panels to a var to make it easier to ref
+        playerPnl = gameCardTable.pnlHumanHand;
+        computerPnl = gameCardTable.pnlComputerHand;
+        playPnl = gameCardTable.pnlPlayArea;
+        // Set the settings for the actual window
+        gameCardTable.setSize(1000, 700); // 800 600 was original
+        gameCardTable.setLocationRelativeTo(null);
+        gameCardTable.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        GUICard.loadCardIcons(); // Generate all the card icons
+        gameCardTable.setVisible(true);
+    }
+    
+    /**
+     * updateComputerDisplay: Clean & Clears the computer's JPanel & then
+     * draws on it the cards and its "cant play" count.
+     * 
+     * @param computerHand the hand of the computer's to display
+     * @param cantPlay the computer's "cant play" count
+     */
+    public void updateComputerDisplay(Hand computerHand, int cantPlay) {
+        // For all of our displays we redraw the canvas
+        computerPnl.removeAll();
+        computerPnl.revalidate();
+        computerPnl.repaint();
+        
+        // Then loop through the hand & display the cards on the JPanel
+        for (int i = 0; i < computerHand.getNumCards(); i++) {
+            computerPnl.add(new JLabel(GUICard.getBackCardIcon()));
+        }
+        
+        // When the computer has won we can display that in the box
+        if (cantPlay > 0) {
+            computerPnl.add(new JLabel("Computer couldn't play " + cantPlay + " times!"));
+        }
+        gameCardTable.setVisible(true);
+    }
+    
+    /**
+     * updatePlayerDisplay: Clean & Clears the display of the player's
+     * card's. Displays the player's "cant play" count.
+     * 
+     * @param playerHand the hand of the player to display
+     * @param cantPlay the player's "cant play" count
+     * 
+     */
+    public void updatePlayerDisplay(Hand playerHand, int cantPlay) {
+        // For all of our displays we redraw the canvas
+        playerPnl.removeAll();
+        playerPnl.revalidate();
+        playerPnl.repaint();
+
+        JPanel tempJPanel = new JPanel();
+        
+        // Then loop through the hand & build the buttons to display
+        for (int i = 0; i < playerHand.getNumCards(); i++) {
+            JButton temp = new JButton(GUICard.getIcon(playerHand.inspectCard(i)));
+            // Buttons store the index of the clicked card & sends it to
+            // the ActionListener to store for later use.
+            temp.setActionCommand("" + i);
+            temp.addActionListener(new CardClicked());
+            tempJPanel.add(temp);
+        }
+        
+        // Display players win count if they have won some rounds already
+        if (cantPlay > 0) {
+            tempJPanel.add(new JLabel("Player couldn't play "
+            + cantPlay + " times!", JLabel.CENTER));
+        }
+
+        playerPnl.add(tempJPanel, BorderLayout.CENTER);
+        gameCardTable.setVisible(true);
+    }
+
+    /**
+     * addPlayerStackButtons: Adds the Stack selection buttons to the BOTTOM of 
+     * the players hand area to allow them to select which stack they'd like to 
+     * place the cards in. Make sure you call this AFTER updating the display.
+     */
+    public void addPlayerStackButtons() {
+        // Create Labels/Buttons that signal which Stack the card 
+        // the player will try to play will go
+        JLabel nextPlay = new JLabel("The next card you play will go to the: ");
+
+        JButton leftStackButton = new JButton("Left Stack");
+        leftStackButton.setActionCommand("0");
+        leftStackButton.addActionListener(new StackClicked());
+
+        JButton middleStackButton = new JButton("Middle Stack");
+        middleStackButton.setActionCommand("1");
+        middleStackButton.addActionListener(new StackClicked());
+        
+        JButton rightStackButton = new JButton("Right Stack");
+        rightStackButton.setActionCommand("2");
+        rightStackButton.addActionListener(new StackClicked());
+        
+        // Check what our selected index is and highlight 
+        // the corresponding button in RED
+        if (CardGameController.stackButtonIndex == 0) {
+            leftStackButton.setForeground(Color.RED);
+        } else if (CardGameController.stackButtonIndex == 1) {
+            middleStackButton.setForeground(Color.RED);
+        } else if (CardGameController.stackButtonIndex == 2) {
+            rightStackButton.setForeground(Color.RED);
+        }
+        
+        // Add our new Stack Choosing Buttons to the Panel w Message
+        JPanel tempJPanel = new JPanel();
+        tempJPanel.add(nextPlay);
+        tempJPanel.add(leftStackButton);
+        tempJPanel.add(middleStackButton);
+        tempJPanel.add(rightStackButton);
+
+        // Add the panel to the BOTTOM of the player's hand below the cards
+        playerPnl.add(tempJPanel, BorderLayout.SOUTH);
+        gameCardTable.setVisible(true);
+    }
+    
+    /**
+     * addCantPlayButtons: Handles updating the LOWER panel of the players hand 
+     * area for the case when the player cannot play any cards.
+     */
+    public void addCantPlayButtons() {
+        // Create Labels/Buttons that handle the Cant Play scenario
+        JLabel cantPlay = new JLabel("Oh sorry. It looks like your cards can't be played.");
+        
+        JButton tempButton = new JButton("I Can't Play");
+        // Normal values for StackClicked are 0, 1, & 2. We use 4 to denote 
+        // that the I Cant Play button was just clicked.
+        tempButton.setActionCommand("4"); 
+        tempButton.addActionListener(new StackClicked());
+        // Create a panel to attach to the bottom of the player area for 
+        // the "cant play" button & message
+        JPanel tempJPanel = new JPanel();
+        tempJPanel.add(cantPlay);
+        tempJPanel.add(tempButton);
+        
+        playerPnl.add(tempJPanel, BorderLayout.SOUTH);
+    
+        gameCardTable.setVisible(true);
+    }
+
+    /**
+     * updatePlayArea: Uses playedCards to determine what three
+     * cards have been played and then displays them in the center
+     * of the play area.
+     * 
+     * @param playedCards the cards in the center play area
+     */
+    public void updatePlayArea(Card[] playedCards) {
+        // Cleans & clears the JPanel
+        playPnl.removeAll();
+        playPnl.revalidate();
+        playPnl.repaint();
+
+        // Creates a new JPanel for the CENTER only of the actual overall play 
+        // area panel. This is so we can insert a timer on the right side later 
+        // without any collision.
+        JPanel tempPanel = new JPanel();
+        for (int i = 0; i < playedCards.length; i++) {
+            if (playedCards[i] != null) {
+                JLabel temp = new JLabel(GUICard.getIcon(playedCards[i]));
+                tempPanel.add(temp);
+            }
+        }
+        playPnl.add(tempPanel, BorderLayout.CENTER);
+
+        // Timer Code for the Right of the Play Area
+        JPanel timerPanel = new JPanel();
+        timerPanel.setLayout(new GridLayout(2, 1));
+        // Create the actual start stop button & empty timer text label
+        JButton flipTimerButton = new JButton("Start/Stop");
+        timerTime = new JLabel("00:00", JLabel.CENTER);
+        timerPanel.add(timerTime);
+        flipTimerButton.addActionListener(new TimerClicked());
+        timerPanel.add(flipTimerButton);
+        playPnl.add(timerPanel, BorderLayout.EAST);
+        
+        gameCardTable.setVisible(true);
+    }
+
+    /**
+     * showWinners: Clears the ENTIRE middle play panel and displays the 
+     * game over text with the winner displayed in the middle.
+     */
+    public void showWinners(int playerNum, int computerNum) {
+        // Create our new panel to display on
+        JPanel winPanel = new JPanel();
+        winPanel.setLayout(new GridLayout(2, 1));
+        JLabel gameOver = new JLabel("GAME OVER!!!", JLabel.CENTER);
+        JLabel winnerText = new JLabel();
+        winnerText.setHorizontalAlignment(JLabel.CENTER);
+
+        if (playerNum == computerNum) {
+            winnerText.setText("IT WAS A TIE!!!");
+        } else if (playerNum < computerNum) {
+            winnerText.setText("THE PLAYER HAS WON THE GAME!!!");
+        } else {
+            winnerText.setText("THE COMPUTER HAS WON THE GAME!!!");
+        }
+
+        winPanel.add(gameOver);
+        winPanel.add(winnerText);
+
+        // Clear the Play Panel & add the winning panel to be displayed
+        playPnl.removeAll();
+        playPnl.revalidate();
+        playPnl.repaint();
+        playPnl.add(winPanel, BorderLayout.CENTER);
+        gameCardTable.setVisible(true);
+    }
+
+    /**
+     * updateTimer: Updates the play area JPanel and it's timer related 
+     * components.
+     */
+    public void updateTimer() {
+        int sec = Timer.getTimerSeconds();
+        // Use division/modulo to calculate our total minutes & seconds from
+        // the total seconds counters.
+        int mins = sec/60;
+        sec = sec % 60;
+        // Now w new values w format them to fit the 00 timer standard
+        DecimalFormat df = new DecimalFormat("00");
+        String fixMin = df.format(mins);
+        String fixSec = df.format(sec);
+        // Update the timer text & display it
+        timerTime.setText(fixMin + ":" + fixSec);
+        gameCardTable.setVisible(true);
+    }
+}
+
+/**
+ * StackClicked: Handles the Stack selection buttons as well as the "I Can't
+ * Play" button and their index setting actions.
+ */
+class StackClicked implements ActionListener {
+    public void actionPerformed(ActionEvent e) {
+        // Process the incoming ActionEvent
+        int temp = Integer.parseInt(e.getActionCommand());
+        if (temp == 4) {
+            // Reset the stack error & increment our special stack counter
+            CardGameModel.playerCouldntPlay = true;
+            CardGameController.screenUpdate = true;
+            CardGameController.stackButtonIndex = 0;
+        } else {
+            // We set the stack index normally if it's a normal case
+            CardGameController.stackButtonIndex = temp;
+        }
+        CardGameController.screenUpdate = true;
+    }
+}
+
+/**
+ * CardClicked: Handles the clicking of normal playing cards in the player's 
+ * hand. Makes sure to update the screen after each click as a potential card 
+ * could be played.
+ */
+class CardClicked implements ActionListener {
+    public void actionPerformed(ActionEvent e) {
+        int temp = Integer.parseInt(e.getActionCommand());
+        // Set out Card Clicked index to the incoming variable, then update the 
+        // game and its status
+        CardGameController.indexOfClick = temp;
+        CardGameController.screenUpdate = true;
+    }
+}
+
+// CardGameController: The large overarching controller of the game that manages
+// a CardGameView for GUI and the CardGameModel that runs the internals of the /
+// game. 
+class CardGameController {
+    // Screen update tells the game loop when to update the GUI of the game
+    public static boolean screenUpdate = false;
+    // Stack Error keeps track of the "cant play" scenario for JUST the player
+    public static boolean stackError = false;
+    // Keeps track of what card the player clicks
+    public static int indexOfClick = 8;
+    public static int stackButtonIndex = 0; // 0 is L, 1 is M, 2 is R
+    CardGameView gameView;
+    CardGameModel gameModel;
+
+    // Our only constructor, needs an CardGameOutline to run the internal game.
+    CardGameController(CardGameOutline SuitMatchGame) {
+        this.gameView = new CardGameView();
+        this.gameModel = new CardGameModel(SuitMatchGame);
+    }
+    
+    /** CARD GAME OPERATION FUNCTIONS */
+    
+    /**
+     * initialDeal: Deals starting cards & the center cards
+     */
+    public void initialDeal() {
+        gameModel.dealStartingCards(); // 3 in the middle
+        gameModel.deal(); // the hands
+    }
+
+    /**
+     * incrementPlayerCant: Increments Player "Cant Play" scenario
+     */
+    public void incrementPlayerCant() {
+        gameModel.incrementPlayerCant();
+    }
+
+    /**
+     * incrementComputerCant: Increments Computer's "Cant Play" scenario
+     */
+    public void incrementComputerCant() {
+        gameModel.incrementComputerCant();
+    }
+
+    /**
+     * resetMiddleCards: Deal starting cards back to the middle incase of the 
+     * two "cant plays" in a row.
+     */
+    public void resetMiddleCards() {
+        gameModel.dealStartingCards();
+    }
+
+    /**
+     * playCard: Plays a card from the player or computer's hand. Uses /
+     * CardGameModel's internal tracker to decide who's hand to play from so 
+     * it's fine to call it whenever, just ensure that indexOfClick and the 
+     * stackIndex tracker are set from CardGameController. 
+     * 
+     * @return true if the card WAS played, false if nothing was
+     */
+    public boolean playCard() {
+        return gameModel.playCard();
+    }
+
+    /**
+     * computerIndexSetter: Runs through the computer's hand and the card's in 
+     * the middle of the play area and determine IF a card is found, then sets 
+     * the indexes needed to playCard for the computer.
+     * 
+     * @return true IF a card was found, false if not found
+     */
+    public boolean computerIndexSetter() {
+        return gameModel.computerIndexSetter();
+    }
+
+    // drawPLYRCard: Draw a card from gameModel after each play
+    public void drawPLYRCard() {
+        gameModel.drawPLYRCard();
+    }
+    
+    // drawCOMPCard: Draw a card from gameModel after each play
+    public void drawCOMPCard() {
+        gameModel.drawCOMPCard();
+    }
+
+    // flipTurn: Flips the turn to the other after each player goes
+    public void flipTurn() {
+        gameModel.flipTurn();
+    }
+
+    // resetCantPlays: Reset all the counters for keeping track of who couldnt 
+    // go last turn
+    public void resetCantPlays() {
+        gameModel.resetCantPlays();
+    }
+
+    /**
+     * setStackError: Checks if the cards in the players hand contain a 
+     * playable card or not, then set the flag for it. 
+     */
+    public void setStackError() {
+        stackError = !(gameModel.canPlayCard());
+    }
+    
+    /**
+     * canPlayCard: Checker to see if the turn can be played. Checks the status 
+     * of the middle cards & the current turn's hand and then runs a loop 
+     * through each of them to see. 
+     * 
+     * @return true IF a card can be played, false if not
+     */
+    public boolean canPlayCard() {
+        return gameModel.canPlayCard();
+    }
+
+    /** GETTERS FOR CARD GAME VARIABLES */
+
+    /**
+     * getDeckSize: Getter for the size of the deck & remaining cards.
+     * 
+     * @return the remaining count of cards in the deck in int
+     */
+    public int getDeckSize() {
+        return gameModel.getDeckSize();
+    }
+
+    /**
+     * getTurn: Getter for the current turn of game.
+     * 
+     * @return true IF the current turn is the COMPUTERS, false if the 
+     * current turn is the PLAYERS
+     */
+    public boolean getTurn() {
+        return gameModel.getTurn();
+    }
+    
+    /** DISPLAY RELATED FUNCTIONS */
+
+    /**
+     * updateTimer: uses the Timer's second tracker to update the display of 
+     * the game's timer
+     */
+    public void updateTimer() {
+        gameView.updateTimer();
+    }
+    
+    /**
+     * showWinners: Clears the center play panel and then displays the game 
+     * over status with the name of the winner.
+     */
+    public void showWinners() {
+        int tempPLYR = gameModel.getPLYRCantPlay();
+        int tempCOMP = gameModel.getCOMPCantPlay();
+
+        gameView.showWinners(tempPLYR, tempCOMP);
+    }
+
+    /**
+     * updatePlayArea: Runs game views method to update the play area depending 
+     * on the state of game model/
+     */
+    public void updatePlayArea() {
+        gameView.updatePlayArea(gameModel.getPlayedCards());
+    }
+
+    /**
+     * updatePlayerArea: Updates player area GUI using card game view's methods 
+     * then checks if there's a "cant play" scenario for the player and updates 
+     * the GUI accordingly.
+     */
+    public void updatePlayerArea() {
+        gameView.updatePlayerDisplay(gameModel.getPlayerHand(), gameModel.getPLYRCantPlay());
+
+        if (stackError) {
+            gameView.addCantPlayButtons();
+        } else {
+            addStackButtons();
+        }
+    }
+
+    /**
+     * updateComputerArea: Updates the computer GUI using the views methods
+     */
+    public void updateComputerArea() {
+        gameView.updateComputerDisplay(gameModel.getComputerHand(), gameModel.getCOMPCantPlay());
+    }
+
+    /**
+     * addStackButtons: Adds the stack buttons for choosing which stack to play 
+     * on using Views methods.
+     */
+    public void addStackButtons() {
+        gameView.addPlayerStackButtons();
+    }
+
+    /**
+     * updateAllAreas: helper function that calls all the updates at once for less lines of code in main.
+     */
+    public void updateAllAreas() {
+        updateComputerArea();
+        updatePlayArea();
+        updatePlayerArea();
+    }
+}
+
+// TimerClicked flips the timer then starts the timer depending on the internal 
+// boolean stored in Timer.
+class TimerClicked implements ActionListener {
+    public void actionPerformed(ActionEvent e) {
+        Timer.flipTimer();
+        Timer temp = new Timer();
+        temp.start();
+    }
+}
+
+// Timer: An internal timer that keeps track of how many seconds have passed.
+class Timer extends Thread {
+    // Keep the timer running w a boolean to determine when depending on when 
+    // the user has clicked the button
+    private static boolean timerRunning = false;
+    private static int timerSeconds = 0;
+
+    // Overridden run that increments the seconds using a doNothing method
+    public void run() {
+        while (timerRunning) {
+            timerSeconds += 1;
+            doNothing();
+        }
+    }
+
+    // flipTimer: Simple flip to the boolean
+    public static void flipTimer() {
+        timerRunning = !(timerRunning);        
+    }
+
+    // getTimerSeconds: Getter for the internal timer in int
+    public static int getTimerSeconds() {
+        return timerSeconds;
+    }
+
+    /**
+     * doNothing: Does nothing in the thread for about one second by using
+     * Thread.sleep. Has a try/catch because it can be interrupted
+     */
+    private void doNothing() {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            System.out.println("Error Interrupted Thread");
+        }
+    }
+}
+        
+// CardTable: A JFrame or display of the table being played on
+class CardTable extends JFrame {
+    static int MAX_CARDS_PER_HAND = 56;
+    static int MAX_PLAYERS = 2; // for now, we only allow 2 person games
+    
+    private int numCardsPerHand;
+    // changed from private int numPlayers to public static int numPlayers
+    public static int numPlayers;
+    
+    public JPanel pnlComputerHand, pnlHumanHand, pnlPlayArea;
+    
+    /*
+    * CardTable: The constructor filters input, adds any panels to the
+    * JFrame, and establishes layouts according to the general description below.
+    */
+    CardTable(String title, int numCardsPerHand, int numPlayers) {
+        this.setTitle(title);
+        
+        // set up layout which will control placement of buttons, etc.
+        // FlowLayout layout = new FlowLayout(FlowLayout.CENTER, 5, 20);
+        BorderLayout layout = new BorderLayout();
+        setLayout(layout);
+        
+        if (numPlayers <= MAX_PLAYERS || numCardsPerHand <= MAX_CARDS_PER_HAND){
+            // Computer hand label & border
+            pnlComputerHand = new JPanel();
+            Border pcOld = new LineBorder(Color.BLACK, 1, true);
+            Border pcNew = BorderFactory.createTitledBorder(pcOld, "Computer Hand");
+            pnlComputerHand.setBorder(pcNew);
+            
+            // Play area label & border
+            pnlPlayArea = new JPanel();
+            pnlPlayArea.setLayout(new BorderLayout());
+            
+            // Create a thin border in play area to divide the 3 sections visually
+            Border oldBorder = new LineBorder(Color.BLACK, 1, true);
+            Border border = BorderFactory.createTitledBorder(oldBorder, "Playing Area");
+            pnlPlayArea.setBorder(border);
+            
+            // Human hand label & border
+            pnlHumanHand = new JPanel();
+            pnlPlayArea.setLayout(new BorderLayout());
+            Border humanOld = new LineBorder(Color.BLACK, 1, true);
+            Border humanNew = BorderFactory.createTitledBorder(humanOld, "Your Hand");
+            pnlHumanHand.setBorder(humanNew);
+            
+            // Separates the three panels into the window 3x1
+            JPanel threePanels = new JPanel();
+            threePanels.setLayout(new GridLayout(3, 1));
+            
+            threePanels.add(pnlComputerHand);
+            threePanels.add(pnlPlayArea);
+            threePanels.add(pnlHumanHand);
+            
+            this.add(threePanels);
+        }
+    }
+    
+    // Accessors
+    public int getNumCardsPerHand() {
+        return this.numCardsPerHand;
+    }
+    
+    public int getNumPlayers() {
+        return numPlayers;
+    }
+}
+        
+// GUICard: Generates an ImageIcon based on the incoming Card.
+class GUICard {
+    private static Icon[][] iconCards = new ImageIcon[14][4];
+    private static Icon iconBack;
+    static boolean iconsLoaded = false;
+    
+    // loadCardIcons: Generates the internal card Icon array from files
+    static void loadCardIcons() {
+        // Check so we don't load from files if we've already done it
+        if (!iconsLoaded) {
+            int cardTracker = 0;
+            // For each value, append the suits onto them & create an icon
+            char[] s_list = new char[] { 'A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'X' };
+            for (char cardVal : s_list) {
+                iconCards[cardTracker][0] = new ImageIcon("./images/"
+                + cardVal + "C.gif"); // Clubs
+                iconCards[cardTracker][1] = new ImageIcon("./images/"
+                + cardVal + "D.gif"); // Diamonds
+                iconCards[cardTracker][2] = new ImageIcon("./images/"
+                + cardVal + "H.gif"); // Hearts
+                iconCards[cardTracker][3] = new ImageIcon("./images/"
+                + cardVal + "S.gif"); // Spades
+                cardTracker++;
+            }
+            // After looping, set the Cardback by itself
+            iconBack = new ImageIcon("./images/BK.gif");
+            iconsLoaded = true; // So we can't loop/run again
+        }
+    }
+    
+    // Static Accessors
+    static public Icon getIcon(Card card) {
+        return iconCards[card.getValueAsInt()][card.getSuitAsInt()];
+    }
+    
+    static public Icon getBackCardIcon() {
+        return iconBack;
+    }
+}
+        
+/*
+ * Card: A public class that creates a card with a value and suit and checks its
+ * validity in errorFlag.
+ */
+class Card {
+    public static char[] valuRanks = new char[] { 'A', '2', '3', '4', '5', '6',
+        '7', '8', '9', 'T', 'J', 'K', 'Q', 'X' };
+    public enum Suit {
+        CLUBS, DIAMONDS, HEARTS, SPADES
+    }
+
+    // Private member data
+    private char value;
+    private Suit suit;
+    private boolean errorFlag;
+
+    // Explicit Constructor
+    Card(char value, Suit suit) {
+        set(value, suit);
+    }
+
+    // Default Constructor
+    Card() {
+        // Sets default card to A of SPADES
+        this.value = 'A';
+        this.suit = Suit.SPADES;
+        this.errorFlag = false;
+    }
+
+    // Copy Constructor
+    Card(Card origCard) {
+        if (origCard != null) {
+            this.value = origCard.getValue();
+            this.suit = origCard.getSuit();
+            this.errorFlag = origCard.getErrorFlag();
+        } else {
+            this.value = 'A';
+            this.suit = Suit.SPADES;
+            this.errorFlag = true;
+        }
+    }
+
+    // toString: Returns the string representation of the card.
+    public String toString() {
+        // returns the value and suit of card or a string if errorFlag true
+        if (errorFlag) {
+            return "[invalid]";
+        } else {
+            return value + " of " + suit;
+        }
+    }
+
+    /**
+     * set: Mutator that accepts legal values. When bad values are passed,
+     * errorFlag is set to true and other values are left alone. If good
+     * values are passed, they're stored & errorFlag is set to false. Uses
+     * isValid to test.
+     *
+     * @param value takes the potential value of the card
+     * @param suit the potential suit of the card
+     * @return true or false depending if the card was valid
+     */
+    public boolean set(char value, Suit suit) {
+
+        if (isValid(value, suit)) {
+            this.value = value;
+            this.suit = suit;
+            errorFlag = false;
+            return true;
+        }
+        errorFlag = true;
+        return false;
+    }
+
+    // Returns the suit
+    public Suit getSuit() {
+        return this.suit;
+    }
+
+    // Returns the value
+    public char getValue() {
+        return this.value;
+    }
+
+    // Returns errorFlag
+    public boolean getErrorFlag() {
+        return this.errorFlag;
+    }
+
+    /**
+     * equals: Compares all the fields (members) and if they're identical.
+     *
+     * @param card The card that you want to check against.
+     * @return True or false depending if the two cards have the same data.
+     */
+    public boolean equals(Card card) {
+        if (value == card.getValue() && errorFlag == card.getErrorFlag() && suit == card.getSuit()) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * isValid: Verifies that the suit and value of the card is correct. Legal
+     * values are ('A', '2', ... '9', 'T', 'J', 'Q',' K').
+     *
+     * @param value the potential value for the card
+     * @param suit the potential suit for the card
+     * @return A boolean; true if it's valid and false otherwise
+     */
+    private boolean isValid(char value, Suit suit) {
+        if (suit == Suit.SPADES || suit == Suit.HEARTS || suit == Suit.DIAMONDS || suit == Suit.CLUBS) {
+            if (value == 'A' || value == 'T' || value == 'J' || value == 'Q' || value == 'K' || value == '2'
+                    || value == '3' || value == '4' || value == '5' || value == '6' || value == '7' || value == '8'
+                    || value == '9' || value == 'X') {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * getValueAsInt: Generates an int value representation of a card's value.
+     * Goes from 0 for Ace to 13 for Joker.
+     *
+     * @return the value in int of the value of the card
+     */
+    public int getValueAsInt() {
+        switch (this.getValue()) {
+            case 'A':
+                return 0;
+            case '2':
+                return 1;
+            case '3':
+                return 2;
+            case '4':
+                return 3;
+            case '5':
+                return 4;
+            case '6':
+                return 5;
+            case '7':
+                return 6;
+            case '8':
+                return 7;
+            case '9':
+                return 8;
+            case 'T':
+                return 9;
+            case 'J':
+                return 10;
+            case 'Q':
+                return 11;
+            case 'K':
+                return 12;
+            case 'X':
+                return 13;
+            default:
+                return 0;
+        }
+    }
+
+    /**
+     * getSuitAsInt: Generates an int value representation of a card's suit.
+     * 0 for CLUBS, 1 for DIAMONDS, 2 for HEARTS, & 3 for SPADES.
+     *
+     * @return the value in int of the suit of the card
+     */
+    public int getSuitAsInt() {
+        switch (this.getSuit()) {
+            case CLUBS:
+                return 0;
+            case DIAMONDS:
+                return 1;
+            case HEARTS:
+                return 2;
+            case SPADES:
+                return 3;
+            default:
+                return 0;
+        }
+    }
+
+    /**
+     * arraySort: Takes an unsorted array of cards w/ its size & uses
+     * a nested for loop to bubble sort the internal cards using the
+     * value of the cards as the sort criteria.
+     *
+     * @param unsortedCards the unsorted array of cards
+     * @param arraySize the size of that unsorted array
+     */
+    static void arraySort(Card[] unsortedCards, int arraySize) {
+        Card tempCard = new Card();
+        // Uses a nested for loop instead of recursion to run bubble sort
+        for (int outer = 0; outer < arraySize; outer++) {
+            for (int inner = 1; inner < (arraySize - outer); inner++) {
+                // Set a temporary card as the "comparison" card
+                tempCard = unsortedCards[inner - 1];
+                // If our compare card IS greater than our
+                // current card swap them.
+                if (tempCard.getValueAsInt() > unsortedCards[inner].getValueAsInt()) {
+                    unsortedCards[inner - 1] = unsortedCards[inner];
+                    unsortedCards[inner] = tempCard;
+                }
+            }
+        }
+    }
+}
+
+// Hand: A class that represents the cards held by a single player.
+class Hand {
+    // Added +4 to MAX_CARDS to include joker (orig 50)
+    // public static final int MAX_CARDS = 50;
+    public static final int MAX_CARDS = 54;
+    private Card[] myCards;
+    private int numCards;
+
+    // Default Constructor
+    Hand() {
+        myCards = new Card[MAX_CARDS];
+        numCards = 0;
+    }
+
+    // resetHand: Resets by setting index to 0 and data to null
+    public void resetHand() {
+        numCards = 0;
+        // this.myCards[getNumCards()].set(' ', null);
+    }
+
+    /**
+     * takeCard: Adds a card to the next available position in the myCards array
+     * (your hand) if there's space.
+     *
+     * @param card The input card object to be taken
+     * @return returns true if a card was taken from the deck & false if the
+     * hand is full
+     */
+    public boolean takeCard(Card card) {
+        if (numCards < MAX_CARDS && card != null) {
+            myCards[numCards] = new Card(card);
+            numCards++;
+            return true;
+        }
+
+        return false; // Our hand is full
+    }
+
+    /**
+     * playCard: returns and removes the card in Nth position of the internal
+     * card array, similar to playing a certain card.
+     *
+     * @param cardIndex the index of the card to be played
+     * @return returns the card to be played
+     */
+    public Card playCard(int cardIndex) {
+        // Case for when the HAND is EMPTY
+        if (numCards == 0) {
+            // Creates a card that DOES NOT work
+            return new Card('M', Card.Suit.SPADES);
+        } else {
+            // Otherwise we just "play" the card & adjust the rest of the hand
+            Card indexCard = myCards[cardIndex];
+
+            numCards--;
+            for (int i = cardIndex; i < numCards; i++) {
+                myCards[i] = myCards[i + 1];
+            }
+
+            myCards[numCards] = null;
+            return indexCard;
+        }
+    }
+
+    // toString: a stringizer that displays the entire hand
+    public String toString() {
+        String toPrint = "Hand = (";
+        for (int i = 0; i < numCards; i++) {
+            toPrint += myCards[i].toString();
+            if (i != (numCards - 1)) {
+                toPrint += ", ";
+            }
+        }
+        return toPrint + ")";
+    }
+
+    // returns the number of Cards in the hand
+    public int getNumCards() {
+        return this.numCards;
+    }
+
+    /**
+     * inspectCard: Accessor for an individual card. Returns a card with
+     * errorFlag = true if k is bad.
+     *
+     * @param k takes an integer and checks the card in the index of integer k
+     * @return returns the card that is at index k
+     */
+    Card inspectCard(int k) {
+        if (k < 0 || k > MAX_CARDS) {
+            Card badCard = new Card('1', Card.Suit.SPADES);
+            return badCard;
+        }
+        return myCards[k];
+    }
+
+    // Changed from myCards[k]
+    void sortHands() {
+        sort();
+    }
+
+    //Sorts the array of cards
+    public void sort() {
+        Card.arraySort(myCards, numCards);
+    }
+}
+
+/*
+ * Deck: A class that represents the source of the cards for dealing and, as the
+ * game progresses, the place from which players can receive new cards
+ */
+class Deck {
+    public static final int MAX_CARDS = 312;
+    private static final int DECK_SIZE = 56;
+    private static Card[] masterPack; // Consistent pack of cards
+
+    private Card[] cards; // General deck array w cards
+    private int topCard; // Index for topmost card
+
+    // Explicit Constructor
+    public Deck(int numPacks) {
+        allocateMasterPack();
+
+        if (numPacks > 0 && numPacks < 7) {
+            this.cards = new Card[DECK_SIZE * numPacks]; // increase init size
+            this.init(numPacks);
+            this.topCard = (DECK_SIZE * numPacks) - 1;
+        } else {
+            // Same as Default Constructor
+            this.cards = new Card[DECK_SIZE];
+            this.init(1);
+            this.topCard = DECK_SIZE - 1;
+        }
+    }
+
+    // Default Constructor. Assumes 1 Pack.
+    public Deck() {
+        allocateMasterPack();
+        this.cards = new Card[DECK_SIZE];
+        this.topCard = DECK_SIZE - 1;
+        this.init(1);
+    }
+
+    /**
+     * init: Re-populate cards[] with the standard DECK_SIZE × numPacks cards.
+     * Assumes that
+     * you only call init w the same number of initial packs.
+     *
+     * @param numPacks the amount of packs to add
+     */
+    public void init(int numPacks) {
+        for (int k = 0; k < numPacks * DECK_SIZE; k++) {
+            this.cards[k] = new Card(masterPack[k % DECK_SIZE]); // divides init //might be here?
+        }
+        this.topCard = (numPacks * DECK_SIZE) - 1;
+    }
+
+    /**
+     * shuffle: Mixes up the cards by using the standard random generator to
+     * procedurally swap each card w/ a random other. Does this toShuffleCount
+     * amount of times for more thoroughly mixed cards.
+     */
+    public void shuffle() {
+        Random shuffleCards = new Random();
+        int toShuffleCnt = 2;
+        // Ex: For a single 52 card deck, this'll shuffle cards about 104
+        // times.
+        for (int j = 0; j < toShuffleCnt; j++) {
+            for (int i = 0; i < topCard; i++) {
+                int change = shuffleCards.nextInt(topCard); // Generates Index
+                // Swapping the i-th card w/ the generated one
+                Card temp = new Card(cards[i].getValue(), cards[i].getSuit());
+                cards[i] = cards[change];
+                cards[change] = temp;
+            }
+        }
+    }
+
+    /**
+     * dealCard: Returns and removes the card in the top occupied position of
+     * cards[] or just "the topmost card".
+     *
+     * @return the topmost Card if there's still one, otherwise a card w/ errorFlag
+     *          = true.
+     */
+    Card dealCard() {
+        Card toReturn = new Card('1', Card.Suit.SPADES);
+        if (topCard >= 0) {
+            // IF deck isn't empty
+            // Card toReturn = new Card(cards[topCard]);
+            // cards[topCard] = null;
+            // topCard--;
+            // return toReturn;
+            return cards[--topCard];
+        } else {
+            return toReturn;
+        }
+        // Deck is empty
+        // return new Card('1', Card.Suit.SPADES);
+    }
+
+    // Returns topCard
+    public int getTopCard() {
+        return this.topCard;
+    }
+
+    /**
+     * inspectCard: Accessor for an individual card. Returns a card with
+     * errorFlag = true if k is bad.
+     *
+     * @param k the index of the specific card in the deck
+     * @return the Card at the specified index
+     */
+    public Card inspectCard(int k) {
+        if (k < 0 || k > topCard) {
+            // Incorrect Case
+            Card badCard = new Card('1', Card.Suit.SPADES);
+            return badCard;
+        }
+        return cards[k]; // Correct Case
+    }
+
+    /**
+     * allocateMasterPack: Constructs a standard playing card deck to be 
+     * copied from if needed. Even if many Deck objects are constructed, 
+     * this will not allow itself to be executed more than once.
+     */
+    private static void allocateMasterPack() {
+        // if masterPack is null, we make our first copy or do nothing
+        if (masterPack == null) {
+            masterPack = new Card[DECK_SIZE];
+            // Declare two suit/value arrays for generation.
+            Card.Suit[] suitArray = Card.Suit.values();
+            char[] charArray = new char[] { 'A', '2', '3', '4', '5', '6', '7',
+                '8', '9', 'T', 'J', 'Q', 'K' };
+            int masterIndex = 0;
+            // Double for loop for index to generate all needed cards
+            for (int i = 0; i < suitArray.length; i++) {
+                for (int j = 0; j < charArray.length; j++) {
+                    masterPack[masterIndex] = new Card(charArray[j], suitArray[i]);
+                    masterIndex++;
+                }
+            }
+        }
+    }
+
+    /**
+     * addCard: Make sure that there are not too many instances of the card in
+     * the deck if you add it, then put card at the top of the deck.
+     *
+     * @param card specific card instance to search for
+     * @return boolean to see if it was successful at adding a card
+     */
+    public boolean addCard(Card card) {
+        int maxInstances = (cards.length % 52) + 1;
+        int found = 0;
+
+        for (int i = 0; i < cards.length; i++) {
+            if (cards[i].equals(card)) {
+                found++;
+            }
+
+            // Checks if there is room at the end of the array
+            if (i == topCard && found < maxInstances) {
+                cards[topCard++] = card;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * removeCard: Removes a specific card from the deck. Put the current top
+     * card into its place. Checks that the card you need is actually still in
+     * the deck first.
+     *
+     * @param card specific card to search for
+     * @return True if operation was done, False if card wasn't found in the
+     * first place
+     */
+    public boolean removeCard(Card card) {
+        boolean doSwap = false;
+        int toSwapIndex = 0;
+
+        // Use a for loop w boolean to check if a card exists.
+        for (int i = 0; i < cards.length; i++) {
+            if (cards[i].equals(card)) {
+                // If the current card in the deck is EQUAL to our search card
+                toSwapIndex = i;
+            }
+        }
+
+        if (doSwap) {
+            Card topSwap = new Card(cards[getTopCard()]); // Topmost Card
+            Card temp = new Card(cards[toSwapIndex]); // Our Mid-deck Card
+            cards[toSwapIndex] = topSwap; // Perform Swaps
+            cards[topCard] = temp;
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * sort(): put all of the cards in the deck back into the right order
+     * according to their values. Uses Card's arraySort (bubble sort) to 
+     * do so.
+     */
+    void sort() {
+        Card.arraySort(cards, getNumCards());
+    }
+
+    /**
+     * getNumCards: Returns the count of remaining cards in the
+     * deck using topCard + 1.
+     *
+     * @return returns number remaining cards in the deck.
+     */
+    int getNumCards() {
+        return this.topCard + 1;
+    }
+}
+
+class CardGameOutline { 
+    private static final int MAX_PLAYERS = 50;
+    private int numPlayers;
+    private int numPacks; // # standard 52-card packs per deck
+                          // ignoring jokers or unused cards
+    private int numJokersPerPack; // if 2 per pack & 3 packs per deck, get 6
+    private int numUnusedCardsPerPack; // # cards removed from each pack
+    private int numCardsPerHand; // # cards to deal each player
+    private Deck deck; // holds the initial full deck and gets smaller (usually) during play
+    private Hand[] hand; // one Hand for each player
+    private Card[] unusedCardsPerPack; // an array holding the cards not used in the game.
+                                       // e.g. pinochledoes not use cards 2-8 of any suit
+
+    public CardGameOutline(int numPacks, int numJokersPerPack,
+            int numUnusedCardsPerPack, Card[] unusedCardsPerPack,
+            int numPlayers, int numCardsPerHand) {
+        int k;
+        // filter bad values
+        if (numPacks < 1 || numPacks > 6)
+            numPacks = 1;
+        if (numJokersPerPack < 0 || numJokersPerPack > 4)
+            numJokersPerPack = 0;
+        if (numUnusedCardsPerPack < 0 || numUnusedCardsPerPack > 50) // > 1 card
+            numUnusedCardsPerPack = 0;
+        if (numPlayers < 1 || numPlayers > MAX_PLAYERS)
+            numPlayers = 4;
+        // one of many ways to assure at least one full deal to all players
+        if (numCardsPerHand < 1 ||
+                numCardsPerHand > numPacks * (52 - numUnusedCardsPerPack)
+                        / numPlayers)
+            numCardsPerHand = numPacks * (52 - numUnusedCardsPerPack) / numPlayers;
+        // allocate
+        this.unusedCardsPerPack = new Card[numUnusedCardsPerPack];
+        this.hand = new Hand[numPlayers];
+        for (k = 0; k < numPlayers; k++)
+            this.hand[k] = new Hand();
+        this.deck = new Deck(numPacks);
+        // assign to members
+        this.numPacks = numPacks;
+        this.numJokersPerPack = numJokersPerPack;
+        this.numUnusedCardsPerPack = numUnusedCardsPerPack;
+        this.numPlayers = numPlayers;
+        this.numCardsPerHand = numCardsPerHand;
+        for (k = 0; k < numUnusedCardsPerPack; k++)
+            this.unusedCardsPerPack[k] = unusedCardsPerPack[k];
+        // prepare deck and shuffle
+        this.newGame();
+    }
+
+    // constructor overload/default for game like bridge
+    public CardGameOutline() {
+        this(1, 0, 0, null, 4, 13);
+    }
+
+    // returns the give hand
+    public Hand getHand(int k) {
+        // hands start from 0 like arrays
+        // on error return automatic empty hand
+        if (k < 0 || k >= numPlayers)
+            return new Hand();
+
+        return hand[k];
+    }
+
+    // draws a card from the deck
+    public Card getCardFromDeck() {
+        return deck.dealCard();
+    }
+    
+    // returns the number of cards in deck
+    public int getNumCardsRemainingInDeck() {
+        return deck.getNumCards();
+    }
+
+    /**
+    * newGame: creates new game instance 
+    */
+    public void newGame() {
+        int k, j;
+        // clear the hands
+        for (k = 0; k < numPlayers; k++)
+            hand[k].resetHand();
+        // restock the deck
+        deck.init(numPacks);
+
+        // remove unused cards
+        for (k = 0; k < numUnusedCardsPerPack; k++)
+            deck.removeCard(unusedCardsPerPack[k]);
+        // add jokers
+        for (k = 0; k < numPacks; k++)
+            for (j = 0; j < numJokersPerPack; j++)
+                deck.addCard(new Card('X', Card.Suit.values()[j]));
+        // shuffle the cards
+        deck.shuffle();
+    }
+
+    /**
+     * deal: Deals cards 
+     * @return true is it can and false if it can't
+     */
+    public boolean deal() {
+        // 
+        int k, j;
+        boolean enoughCards;
+
+        // clear all hands
+        for (j = 0; j < numPlayers; j++)
+            hand[j].resetHand();
+
+        enoughCards = true;
+        for (k = 0; k < numCardsPerHand && enoughCards; k++) {
+            for (j = 0; j < numPlayers; j++)
+                if (deck.getNumCards() > 0)
+                    hand[j].takeCard(deck.dealCard());
+                else {
+                    enoughCards = false;
+                    break;
+                }
+        }
+        return enoughCards;
+    }
+
+    /**
+     * sortHands: you arrange your hand from smallest to largest value
+     */
+    void sortHands() {
+        int k;
+        for (k = 0; k < numPlayers; k++)
+            hand[k].sort();
+    }
+
+    /**
+    * playCard(): you chose a card from your hand and play it
+    * @param int you specify which player, int you specify the index of * the card in hand
+    * @return True if operation was done, False if card was not available
+    */
+    Card playCard(int playerIndex, int cardIndex) {
+        // returns bad card if either argument is bad
+        if (playerIndex < 0 || playerIndex > numPlayers - 1 ||
+                cardIndex < 0 || cardIndex > numCardsPerHand - 1) {
+            // Creates a card that does not work
+            return new Card('M', Card.Suit.SPADES);
+        }
+        // return the card played
+        return hand[playerIndex].playCard(cardIndex);
+    }
+
+    /**
+    * takeCard(): checks deck to see if there are any cards then takes 
+    * card.
+    * @param int you specify which player 
+    * @return True if operation was done, False if card was not available
+    */
+    boolean takeCard(int playerIndex) {
+        // returns false if either argument is bad
+        if (playerIndex < 0 || playerIndex > numPlayers - 1)
+            return false;
+
+        // Are there enough Cards?
+        if (deck.getNumCards() <= 0)
+            return false;
+        return hand[playerIndex].takeCard(deck.dealCard());
+    }
+}

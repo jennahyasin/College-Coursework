@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#AA9E9E"
+    android:backgroundTint="#D4CCE4"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="match_parent"
+        android:layout_height="107dp"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#C5BDBD"
+        android:contentDescription="@string/csumb_logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logo" />
+
+    <Button
+        android:id="@+id/videoButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Click here!"
+        app:rippleColor="#B1BC49"
+        app:strokeColor="#404040" />
+
+    <TextView
+        android:id="@+id/courseDescription"
+        android:layout_width="match_parent"
+        android:layout_height="263dp"
+        android:background="#D3E7EA"
+        android:backgroundTint="#A19F9F"
+        android:fontFamily="monospace"
+        android:text="Click a course from the selection below to view the course's description!"
+        android:textAlignment="center"
+        android:textColor="#172A91"
+        android:textSize="15sp"
+        tools:text="Click a course from the selection below to view the course's description!" />
+
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

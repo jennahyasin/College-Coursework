@@ -1,0 +1,74 @@
+/*
+ * Jennah Yasin
+ * This program converts the user's full name from regular case into all capital
+ * and all lower case letters. After that, it converts the user's inputed amount
+ * of hours spent from 3 decimal spaces into one decimal space. 
+ */
+import java.text.DecimalFormat;
+import java.util.Scanner;
+
+public class StringManipulator
+{   
+    public static final int MIN_HOURS = 12;
+    public static final int MAX_HOURS = 20;
+        
+    public static void main (String[] args) 
+    {      
+        //Part1    
+        Scanner keyboard = new Scanner(System.in);
+        String firstName, lastName;
+        
+        System.out.println("Please enter your first and last name with the "
+     			   + "first letters capitalized: ");
+        firstName = keyboard.next();
+        lastName = keyboard.next();
+        
+        //combines the first and last name to a string w/ space between
+        String fullName = firstName + " " + lastName;
+        //stores the length of fullName in count, -1 because of the space between
+        int count = fullName.length() - 1; 
+    
+        //prints out full name and length of the name
+        System.out.println("Full name: " + fullName + " " + "(" + count + " letters)");
+        //converts full name to all upper case 
+        System.out.println("Full name in all upper case: " + fullName.toUpperCase());
+        //converts full name to all lower case
+        System.out.println("Full name in all lower case: " +fullName.toLowerCase());
+        
+        // Part2
+        System.out.println("You should be spending " + MIN_HOURS + " - " +
+     			   MAX_HOURS + " hours in this class each week.");
+        // asks the user for input of how many hours they spent
+        System.out.println("In 3 decimal places, enter how many hours you spent:");
+        double hoursSpent = keyboard.nextDouble();
+     		
+        // rounds the user's hours from 3 decimal places to only 1 decimal space
+        DecimalFormat rounded = new DecimalFormat("0.0");
+        System.out.println("In 1 decimal place, you spent "
+     			   + rounded.format(hoursSpent) + " hours.");
+    }
+}
+
+/* 
+* Run #1:
+Please enter your first and last name with the first letters capitalized: 
+Jennah Yasin
+Full name: Jennah Yasin (11 letters)
+Full name in all upper case: JENNAH YASIN
+Full name in all lower case: jennah yasin
+You should be spending 12 - 20 hours in this class each week.
+In 3 decimal places, enter how many hours you spent:
+3.555
+In 1 decimal place, you spent 3.6 hours.
+
+* Run #2:
+Please enter your first and last name with the first letters capitalized: 
+Bob John
+Full name: Bob John (7 letters)
+Full name in all upper case: BOB JOHN
+Full name in all lower case: bob john
+You should be spending 12 - 20 hours in this class each week.
+In 3 decimal places, enter how many hours you spent:
+8.004
+In 1 decimal place, you spent 8.0 hours.
+*/
