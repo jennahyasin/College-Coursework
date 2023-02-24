@@ -1,0 +1,66 @@
+
+# Name: Jennah Yasin. ,5nheu
+# Date: March 8, 2022
+# Title: Lab1 - task
+# Description: This program computes the area of a rectangle
+# and the area of a circle based on
+# user input for data only if the user is valid. 
+
+#!/bin/bash
+echo Executing $0
+echo $(/bin/ls | wc -l) files
+wc -l $(/bin/ls)
+echo "HOME="$HOME 
+echo "USER="$USER 
+echo "PATH="$PATH 
+echo "PWD="$PWD 
+echo "\$\$"=$$ 
+user=`whoami`
+numusers=`who | wc -l`
+echo "Hi $user! There are $numusers users logged on." 
+# checks if the user is "me". If valid, calculations for rectangle are shown
+if [ $user = "yasi8140" ]
+then
+   echo "Now you can proceed!"
+   response="Yes"
+   while [ $response != "No" ] 
+   do
+      echo "Enter height of rectangle: " 
+      read height
+      echo "Enter width of rectangle: " 
+      read width
+      area=`expr $height \* $width`
+      echo "The area of the rectangle is $area" 
+
+      echo "Would you like to repeat for another rectangle [Yes/No]?" 
+      read response
+   done
+   #if user chooses "No", calculations for circle are shown
+   response="No"
+   
+   # Step 3
+   response2="Yes"
+   while [ $response2 != "No" ]
+   do
+      echo "Enter radius of circle: "
+      read radius
+
+      area2=`expr "3.14 * $radius * $radius"|bc`
+      echo "The area of the circle is $area2"
+      echo "Would you like to repeat for another circle [Yes/No]?"
+      read response2
+   done
+#Otherwise, if user is not valid, exit program. 
+else
+   echo "Check who logged in!"
+   exit 1
+   fi
+
+#What linux system are you using?
+# I am using centOS ea ≥≥≥≥≥≥≥≥≥≥≥≥≥≥≥q1	m/q`on Mac. 
+# Did you experience any difficulties with this lab task? 
+# Since I am new with working in Linux and bash shell, I was a little
+# confused at first with how they worked. However, once I completed
+# all of the readings and watched all of the lecture videos, I was able
+# to complete the task with minimal difficulties. The only difficulty I had was
+# trying to adjust to the syntax of working in vi. 

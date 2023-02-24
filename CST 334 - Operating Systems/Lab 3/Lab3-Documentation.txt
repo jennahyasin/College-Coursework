@@ -1,0 +1,15 @@
+
+# Name: Jennah Yasin
+# Date: March 22, 2022
+# Title: Lab3 - Documentation
+# Description: Documentation for Steps 1-3 for Lab 3.
+Step 1: Converted given code into vi editor and complied the c program. Then, I was able to run it and get output of the "ls" command.
+
+Step 2: Same as step1, but the c program was made to represent reader on the downstream and then the writer on the upstream and ultimately adds a 
+Space between every character in the file's name.
+
+Step 3: For this step, we were asked to create a c program that implemented the pipe command: cat /etc/passwd | grep root
+	I started off by using the step 1 code as an outline and changed the code so 
+	that it implements the new commands.
+	I then compiled the c program and ran it. 
+	This step ultimately searched the directory and searched for the root information.
