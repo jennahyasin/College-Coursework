@@ -43,7 +43,7 @@ Select year and semester to add course to
 Admin fills out New course form:
     
   ------------------------------------------
-  |   Semester: Fall 2021                  |
+  |   Semester: Fall 2020                  |
   |                                        |
   |  Name        BUS-299 Analytics         |
   |              -------------------       |
