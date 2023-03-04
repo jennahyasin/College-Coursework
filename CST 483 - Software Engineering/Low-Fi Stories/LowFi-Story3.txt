@@ -1,0 +1,73 @@
+lo fidelity sketch of the story
+
+As a user, I can use single sign on (SSO) to authenticate myself.
+
+User chooses who they are option
+  --------------------------
+  |  o I am an Admin      |
+  |  o I am a Student     |
+  |  o I am an Instructor |
+  |                       |
+  |   	Continue          |
+  --------------------------
+
+User logs in:
+  -------------------------
+  |    Student Login     |
+  |                      |
+  |  Student id ______   |
+  |  password   ______   |
+  |  			 |  
+  |       Login          |
+  -------------------------
+
+User selects account settings option
+
+  ----------------------------
+  |   o Manage my courses    |
+  |   o View Class Schedule  |
+  |   o Account settings     |
+  |                          |
+  |   	 Continue            |
+  ----------------------------
+  
+User selects Enable SSO authentication option
+  ----------------------------------
+  |      Account Settings          |
+  |                                |
+  |   o Edit Profile               |
+  |   o Enable SSO authentication  |
+  |   o Advanced settings          |           
+  |                                |
+  |        Continue                |
+  ----------------------------------
+  
+User fills out SSO authentication form to enable it
+    
+  --------------------------------------------
+  |       Enable SSO Authentication          |
+  |                                          | 
+  |  Verify login using:                     |
+  |	o Email                              |
+  |	o Phone Number                       |
+  |	   Enter Phone Number _______        |
+  |              ---------------- Send Code  | 		   
+  |	Enter Code _ _ _ _                   |
+  |                Submit                    |
+  |                                          |
+  |      SSO Authentication Enabled          |
+  |                                          |
+  --------------------------------------------
+  
+  
+Now after a user enters login info, they will be asked to authenticate
+  -------------------------------------------------
+  |             SSO Verification                  |
+  |                                               |
+  |      Text with code sent to (XXX)-XXX-1234:   |
+  |	 Enter Code ________                      |
+  |                                               |
+  |                  Login                        |
+  |                                               |
+  -------------------------------------------------
+  
