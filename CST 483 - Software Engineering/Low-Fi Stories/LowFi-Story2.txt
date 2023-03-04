@@ -1,0 +1,69 @@
+lo fidelity sketch of the story
+
+As admin, I can create a new course and assign an instructor.
+
+Admin logs in
+  ---------------------
+  |   admin id _____  |
+  |   password _____  |
+  |                   |
+  |   Login           |
+  ---------------------
+
+Select option to manage course:
+  -------------------------- 
+  |   o Manage Students    |
+  |   o Manage Courses     |
+  |   o Manage Instructors |    
+  |                        |
+  |                        |
+  |     Continue           |
+  --------------------------
+
+Select option to add a new course: 
+
+  ----------------------------
+  |   o Create new course    |
+  |   o Edit Existing Course |
+  |   o Delete Course        |
+  |                          |
+  |   	Continue             |
+  ----------------------------
+  
+Select year and semester to add course to
+  ---------------------
+  |   o Fall 2020     |
+  |   o Spring 2021   |
+  |   o Fall 2021     |
+  |                   |
+  |                   |
+  |   Continue        |
+  ---------------------
+  
+Admin fills out New course form:
+    
+  ------------------------------------------
+  |   Semester: Fall 2021                  |
+  |                                        |
+  |   Name        ______                   |
+  |   Description ______                   |
+  |   Instructor  ______                   |
+  |   Units       ______                   |
+  |                                        |
+  |   Add Course                           |
+  |                                        |
+  ------------------------------------------
+  
+  
+View new course added in list of courses
+  ------------------------------------------
+  |   Fall 2020                            |
+  |                                        |
+  |   BUS-299  Analytics                   |
+  |   HCOM-224 Indigenous Literat          |
+  |                                        |
+  |                                        |
+  |   Return                               |
+  |                                        |
+  ------------------------------------------
+  
