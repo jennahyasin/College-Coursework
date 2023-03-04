@@ -45,12 +45,16 @@ Admin fills out New course form:
   ------------------------------------------
   |   Semester: Fall 2021                  |
   |                                        |
-  |   Name        ______                   |
-  |   Description ______                   |
-  |   Instructor  ______                   |
-  |   Units       ______                   |
+  |  Name        BUS-299 Analytics         |
+  |              -------------------       |
+  |  Description Teaches the basics of...  |
+  |              ------------------------- |
+  |  Instructor  Filler Instructor   	   |
+  |              -----------------	   |
+  |  Units       4 units            	   |
+  |              ---------		   |
   |                                        |
-  |   Add Course                           |
+  |         Add Course                     |
   |                                        |
   ------------------------------------------
   
@@ -60,7 +64,7 @@ View new course added in list of courses
   |   Fall 2020                            |
   |                                        |
   |   BUS-299  Analytics                   |
-  |   HCOM-224 Indigenous Literat          |
+  |   HCOM-224 Indigenous Literature       |
   |                                        |
   |                                        |
   |   Return                               |
