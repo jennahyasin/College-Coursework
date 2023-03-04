@@ -1,0 +1,52 @@
+lo fidelity sketch of the story
+
+As a student, I can view my class schedule
+
+Students logs in
+  ---------------------
+  |   email id _____  |
+  |   password _____  |
+  |                   |
+  |   Login           |
+  ---------------------
+  
+Select year and semester 
+  ---------------------
+  |   o Fall 2020     |
+  |   o Spring 2021   |
+  |   o Fall 2021     |
+  |                   |
+  |                   |
+  |   Continue        |
+  ---------------------
+  
+View  schedule for year,semester selected
+
+  Info about courses are displayed.
+    
+  ------------------------------------------
+  |   Fall 2021                            |
+  |                                        |
+  |   BUS-307  Finance    We2-3:50         |
+  |   HCOM-225 Lit & Film Mo8-9:50         |
+  |                                        |
+  |                                        |
+  |                                        |
+  |   Return                               |
+  |                                        |
+  ------------------------------------------
+  
+  
+    * If the course is completed and instructor has entered final 
+      grade, the grade is displayed.
+  ------------------------------------------
+  |   Fall 2020                            |
+  |                                        |
+  |   BUS-299  Analytics            B+     |
+  |   HCOM-224 Indigenous Literat   B      |
+  |                                        |
+  |                                        |
+  |   Return                               |
+  |                                        |
+  ------------------------------------------
+  
