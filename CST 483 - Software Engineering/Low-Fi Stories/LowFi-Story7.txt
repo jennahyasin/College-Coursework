@@ -1,0 +1,66 @@
+Lo fidelity sketch of the story
+
+As admin, I can delete a student from registered list
+
+User chooses I am an admin option
+  --------------------------
+  |  o I am an Admin      |
+  |  o I am a Student     |
+  |  o I am an Instructor |
+  |                       |
+  |   	Continue          |
+  --------------------------
+
+Admin logs in 
+  ---------------------
+  |   admin id _____  |
+  |   password _____  |
+  |                   |
+  |   Login           |
+  ---------------------
+
+Admisn select option to manage students:
+  -------------------------- 
+  |   o Manage Students    |
+  |   o Manage Courses     |
+  |   o Manage Instructors |    
+  |                        |
+  |                        |
+  |     Continue           |
+  --------------------------
+
+Admin selects option to delete a student:
+
+  ----------------------------
+  |     Manage Students     | 
+  |    			    |
+  |   o Add student         |
+  |   o Edit Student Info   |
+  |   o Delete student      |
+  |                         |
+  |   	 Continue           |
+  ----------------------------
+
+Admin enters student's ID & Full name
+
+  -----------------------------------
+  |     Delete Student             | 
+  |    			           |
+  |  Student's ID Number: ______   |
+  |  Student's Full Name: ______   |
+  |                                |
+  |   	    Continue               |
+  -----------------------------------
+
+Admin confirms the deletion 
+  -------------------------------------
+  |        Delete Student            | 
+  |    			             |
+  |  Are you sure you want to delete | 
+  |	Student: Filler Student ?    |
+  |       			     |					 
+  |          o Yes                   |
+  |          o No                    |
+  |                                  |
+  |   	    Delete Student           |
+  -------------------------------------

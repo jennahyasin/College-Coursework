@@ -1,0 +1,67 @@
+Lo fidelity sketch of the story
+
+As a user, I can change the password on my account.
+
+User chooses who they are option 
+  --------------------------
+  |  o I am an Admin      |
+  |  o I am a Student     |
+  |  o I am an Instructor |
+  |                       |
+  |   	Continue          |
+  --------------------------
+
+User(student) logs in
+  -------------------------
+  |    Student Login     |
+  |                      |
+  |  Student id ______   |
+  |  password   ______   |
+  |  			 |  
+  |       Login          |
+ ---------------------------
+
+User(student) selects account settings option
+  ------------------------------
+  |     Student Dashboard    |
+  |			     |
+  |   o Manage my courses    |
+  |   o View Class Schedule  |
+  |   o Account settings     |
+  |                          |
+  |   	   Continue          |
+  ------------------------------
+
+User selects edit profile option
+  ----------------------------------
+  |      Account Settings          |
+  |                                |
+  |   o Edit Profile               |
+  |   o Enable SSO authentication  |
+  |   o Advanced settings          |           
+  |                                |
+  |        Continue                |
+  ----------------------------------
+
+User selects change password option 
+  ----------------------------------
+  |        Edit Profile            |
+  |                                |
+  |   o Change username            |
+  |   o Change password            |      
+  |   o Change phone number        |           
+  |                                |
+  |        Continue                |
+  ----------------------------------
+User changes password and saves changes
+  -------------------------------------------
+  |        Change Password                 |
+  |                                        |
+  |   Current Password      ____________   |
+  |   					   |
+  |   New Password          ____________   |
+  |   Re-type New Password  ____________   |
+  |          				   |                         
+  |                                        |
+  |        	Save Changes               |
+  -------------------------------------------

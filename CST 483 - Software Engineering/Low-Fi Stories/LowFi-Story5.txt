@@ -1,0 +1,83 @@
+Lo fidelity sketch of the story
+
+As admin, I can change the details of an existing course
+
+User chooses I am an Admin option
+  --------------------------
+  |  o I am an Admin      |
+  |  o I am a Student     |
+  |  o I am an Instructor |
+  |                       |
+  |   	Continue          |
+  --------------------------
+
+Admin logs in
+  ---------------------
+  |   admin id _____  |
+  |   password _____  |
+  |                   |
+  |      Login        |
+  ---------------------
+
+Select option to Manage Courses
+  -------------------------- 
+  |   o Manage Students    |
+  |   o Manage Courses     |
+  |   o Manage Instructors |    
+  |                        |
+  |                        |
+  |     Continue           |
+  --------------------------
+
+Select option to edit existing course:
+  ----------------------------
+  |   o Create new course    |
+  |   o Edit Existing Course |
+  |   o Delete Course        |
+  |                          |
+  |   	Continue             |
+  ----------------------------
+
+Select year and semester that course to be edited is in
+
+  ---------------------
+  |   o Fall 2020     |
+  |   o Spring 2021   |
+  |   o Fall 2021     |
+  |                   |
+  |                   |
+  |   Continue        |   
+  ---------------------
+
+Admin clicks edit next to corresponding course to be changed
+
+  ---------------------------------------------
+  |            Fall 2020 Courses              |
+  |   					      |
+  |   CST-483 Software Engineering   o edit   |
+  |   BUS-299  Analytics             o edit   |
+  |   HCOM-224 Indigenous Literature o edit   |
+  |                                           |
+  |                                           |
+  |  		   Continue                   |
+  |				              |
+  ----------------------------------------------
+
+Admin edits desired course info and saves changes. 
+  -----------------------------------------------
+  |            Editing: CST-483                 |
+  |   					        |
+  |   Name        CST-483 Software Engineering  |
+  |   		  ----------------------------  |
+  |   Description Teaches the basics of...      |
+  |     	  ----------------------------  |
+  |   Instructor  Filler Instructor		|
+  |		  ------------------		|
+  |   Units       5 units	   		|
+  |    		  --------- 			|
+  |                                             |
+  |  		   Save Changes                 |
+  |				                |
+  -----------------------------------------------
+
+

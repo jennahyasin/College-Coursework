@@ -1,0 +1,57 @@
+lo fidelity sketch of the story
+
+As a student, I can drop a course I am enrolled in. 
+
+User chooses I am a Student option
+  --------------------------
+  |  o I am an Admin      |
+  |  o I am a Student     |
+  |  o I am an Instructor |
+  |                       |
+  |   	Continue          |
+  --------------------------
+
+Student logs in
+  -------------------------
+  |    Student Login     |
+  |                      |
+  |  Student id ______   |
+  |  password   ______   |
+  |  			 |  
+  |       Login          |
+ ---------------------------
+
+Student selects manage my courses option
+  ------------------------------
+  |     Student Dashboard    |
+  |			     |
+  |   o Manage my courses    |
+  |   o View Class Schedule  |
+  |   o Account settings     |
+  |                          |
+  |   	   Continue          |
+  ------------------------------
+
+Student selects semester that contains course
+they want to drop
+  ------------------------------
+  |     Select Semester:     |
+  |			     |
+  |   o Fall 2020            |
+  |   o Spring 2021          |
+  |   o Summer 2021          |
+  |                          |
+  |   	   Continue          |
+  ------------------------------
+
+Student clicks drop for course they want to drop
+  -----------------------------------
+  |    Manage Fall 2020 Courses     |
+  |			            |
+  |     CSIS 10A  o Drop o Switch   |
+  |     CSIS 9    o Drop o Switch   |       
+  |                                 |
+  |   	       Save Changes         |
+  -----------------------------------
+
+

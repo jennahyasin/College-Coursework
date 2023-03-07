@@ -1,0 +1,68 @@
+Lo fidelity sketch of the story
+
+As admin, I can edit a student’s contact information
+
+User chooses I am an admin option
+  --------------------------
+  |  o I am an Admin      |
+  |  o I am a Student     |
+  |  o I am an Instructor |
+  |                       |
+  |   	Continue          |
+  --------------------------
+
+Admin logs in 
+  ---------------------
+  |   admin id _____  |
+  |   password _____  |
+  |                   |
+  |   Login           |
+  ---------------------
+
+Admin select option to manage students:
+  -------------------------- 
+  |   o Manage Students    |
+  |   o Manage Courses     |
+  |   o Manage Instructors |    
+  |                        |
+  |                        |
+  |     Continue           |
+  --------------------------
+
+Admin selects option to edit student info
+
+  ----------------------------
+  |     Manage Students     | 
+  |    			    |
+  |   o Add student         |
+  |   o Edit Student Info   |
+  |   o Delete student      |
+  |                         |
+  |   	 Continue           |
+  ----------------------------
+
+Admin enters student's ID Number & Full Name
+  ----------------------------------
+  |      Edit Student Info         | 
+  |    			           |
+  |   Student's ID Number: _______ | 
+  |   Student's Full Name: _______ |
+  |                                |
+  |   	     Continue              |
+  -----------------------------------
+
+Admin changes the contact information and saves it
+  ---------------------------------------
+  |        Edit Student Info           | 
+  |    			               |
+  |      Student: Filler Student       |
+  |				       |
+  |   Contact Info:		       |
+  |	Phone Number: 123-456-7890.    | 
+  |                     -------------- | 
+  | 	Email Address: xxx@gmail.com   |	
+  |		       --------------  |
+  |   Personal Info:                   |    
+  |	...                            |
+  |   	       Save Changes            |
+  ---------------------------------------
