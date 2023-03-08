@@ -1,0 +1,38 @@
+Lo fidelity sketch of the story
+
+As a user, I can create an account/register. 
+
+User chooses create new account:
+  --------------------------
+  |      Welcome          |
+  |  o Log In             |
+  |  o Create new account |
+  |                       |
+  |   	Continue          |
+----------------------------
+
+
+User chooses option that matches them. 
+  --------------------------
+  |  o I am an Admin      |
+  |  o I am a Student     |
+  |  o I am an Instructor |
+  |                       |
+  |   	Continue          |
+----------------------------
+
+User fills out form to create an account
+
+  ----------------------------------
+  |     Creating New Account      |
+  |  ID:              _______     | 
+  |  Create Password: _______     |
+  |  Retype Password: _______     | 
+  |        			  |
+  |  Email Address:   ________	  |
+  |  Phone Number:    ________    |
+  |  Address:         ________    |        
+  |                               |
+  |                               |
+  |   	   Create Account         |
+-------------------------------------
